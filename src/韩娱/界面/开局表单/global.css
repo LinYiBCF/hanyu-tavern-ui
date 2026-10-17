@@ -4,42 +4,44 @@
   padding: 0;
 }
 
+/* ═══ 令牌：纯白基调 / 性冷淡 / 与状态栏同一套 ═══ */
 :root {
-  /* ── 底：米白，与状态栏同一套 ── */
-  --c-base: #f7f3ea;
+  --c-base: #ffffff;
 
-  --c-surface: rgba(255, 253, 249, 0.78);
-  --c-surface-raised: #fffdf9;
-  --c-surface-sunken: rgba(120, 104, 78, 0.055);
+  --c-surface: rgba(255, 255, 255, 0.85);
+  --c-surface-raised: #ffffff;
+  --c-surface-sunken: #f5f5f7;
+  --c-bar: #fafafc;
 
-  --c-text: #16161a;
-  --c-text-muted: #56565e;
-  --c-text-faint: #8f8b83;
+  --c-text: #1d1d1f;
+  --c-text-muted: #6e6e73;
+  --c-text-faint: #8e8e93;
 
-  --c-border: rgba(96, 84, 62, 0.11);
-  --c-border-strong: rgba(96, 84, 62, 0.2);
+  --c-border: #e5e5ea;
+  --c-border-strong: #d1d1d6;
 
   --c-primary: #0071e3;
-  --c-primary-dim: rgba(0, 113, 227, 0.1);
-  --c-accent: #16161a;
-  --c-accent-dim: rgba(22, 22, 26, 0.08);
+  --c-primary-dim: #ebf3ff;
+  --c-accent: #1d1d1f;
+  --c-accent-dim: rgba(29, 29, 31, 0.06);
 
-  --c-danger: #e0342b;
-  --c-warning: #c9780a;
-  --c-success: #21833f;
-  --c-info: #2f7fb8;
+  --c-danger: #e11d48;
+  --c-warning: #f97316;
+  --c-success: #16a34a;
+  --c-info: #0071e3;
+  --c-ok: #34c759;
 
-  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Cascadia Mono', Consolas, monospace;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
+    'PingFang SC', 'Apple SD Gothic Neo', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Consolas', 'PingFang SC', monospace;
 
   --radius: 16px;
-  --radius-sm: 10px;
+  --radius-sm: 12px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --glass: blur(24px) saturate(180%);
-  --lift: 0 8px 28px rgba(74, 60, 38, 0.1);
-  --lift-hi: 0 14px 44px rgba(74, 60, 38, 0.16);
+  --glass: blur(20px) saturate(180%);
+  --lift: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --lift-hi: 0 8px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 body {
@@ -48,13 +50,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--c-text);
-  font-weight: 500;
 }
 
 /* ── 字体自选：与状态栏同一套 ── */
 .ap-font--system {
-  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
+    'PingFang SC', 'Apple SD Gothic Neo', 'Microsoft YaHei', sans-serif;
 }
 
 .ap-font--serif {

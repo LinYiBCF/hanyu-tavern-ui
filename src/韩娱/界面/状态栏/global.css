@@ -4,50 +4,57 @@
   padding: 0;
 }
 
+/* ═══ 令牌：纯白基调 / 性冷淡 / iPadOS 18 ═══ */
 :root {
-  /* ── 底：米白，不是灰白。暖一点，才像纸不像屏幕 ── */
-  --c-base: #f7f3ea;
-  --c-base-deep: #efe9dc;
+  /* 底：纯白。参考示例的核心是白，不是米色 */
+  --c-base: #ffffff;
+  --c-base-deep: #f5f5f7;
 
-  /* 面板：比底更白，靠透明度让米白从缝里透上来 */
-  --c-panel: rgba(255, 253, 249, 0.78);
-  --c-panel-solid: #fffdf9;
-  --c-rail: rgba(255, 255, 255, 0.3);
-  --c-sunken: rgba(120, 104, 78, 0.055);
+  /* 面板 */
+  --c-shell: #ffffff;
+  --c-panel-solid: #ffffff;
+  --c-bar: #fafafc;
+  --c-rail: #f8f9fa;
+  --c-sunken: #f5f5f7;
 
-  /* 字：浓，不用淡灰。性冷淡不等于看不清 */
-  --c-text: #16161a;
-  --c-text-muted: #56565e;
-  --c-text-faint: #8f8b83;
+  /* 玻璃 */
+  --c-glass: rgba(255, 255, 255, 0.85);
+  --c-glass-edge: #e5e5ea;
 
-  /* 线：暖发丝线，比纯黑透明更柔和 */
-  --c-border: rgba(96, 84, 62, 0.11);
-  --c-border-strong: rgba(96, 84, 62, 0.2);
+  /* 字：苹果三档灰阶 */
+  --c-text: #1d1d1f;
+  --c-text-muted: #6e6e73;
+  --c-text-faint: #8e8e93;
 
-  /* 强调：只用一种，石墨黑做主，苹果蓝只标记当前 */
-  --c-accent: #16161a;
-  --c-accent-dim: rgba(22, 22, 26, 0.08);
+  /* 线 */
+  --c-border: #e5e5ea;
+  --c-border-strong: #d1d1d6;
+
+  /* 强调 */
+  --c-accent: #1d1d1f;
+  --c-accent-dim: rgba(29, 29, 31, 0.06);
   --c-primary: #0071e3;
-  --c-primary-dim: rgba(0, 113, 227, 0.1);
+  --c-primary-dim: #ebf3ff;
 
   /* 语义 */
-  --c-danger: #e0342b;
-  --c-warning: #c9780a;
-  --c-success: #21833f;
-  --c-info: #2f7fb8;
+  --c-danger: #e11d48;
+  --c-warning: #f97316;
+  --c-success: #16a34a;
+  --c-info: #0071e3;
+  --c-ok: #34c759;
 
-  /* 字族：--font-ui 由 .ap-scope 上的字体选择器覆盖 */
-  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Cascadia Mono', Consolas, monospace;
+  /* 字族 */
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
+    'PingFang SC', 'Apple SD Gothic Neo', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Consolas', 'PingFang SC', monospace;
 
   --radius: 16px;
-  --radius-sm: 10px;
+  --radius-sm: 12px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --glass: blur(24px) saturate(180%);
-  --lift: 0 8px 28px rgba(74, 60, 38, 0.1);
-  --lift-hi: 0 14px 44px rgba(74, 60, 38, 0.16);
+  --glass: blur(20px) saturate(180%);
+  --lift: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --lift-hi: 0 8px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 body {
@@ -56,13 +63,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--c-text);
-  font-weight: 500;
 }
 
 /* ── 字体自选：四个预设，覆盖 --font-ui，子层全部继承 ── */
 .ap-font--system {
-  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
+    'PingFang SC', 'Apple SD Gothic Neo', 'Microsoft YaHei', sans-serif;
 }
 
 .ap-font--serif {
@@ -78,18 +84,18 @@ body {
     monospace;
 }
 
-/* 数值条通用：细，弱，但底色压得住 */
+/* ── 数值条：细、浅、圆 ── */
 .bar {
   position: relative;
-  height: 4px;
-  background: rgba(96, 84, 62, 0.12);
-  border-radius: 2px;
+  height: 6px;
+  background: var(--c-border);
+  border-radius: 3px;
   overflow: hidden;
 }
 
 .bar__fill {
   height: 100%;
-  border-radius: 2px;
+  border-radius: 3px;
   transition: width 0.5s var(--ease);
 }
 
@@ -109,10 +115,14 @@ body {
   background: var(--c-warning);
 }
 
+.bar__fill--success {
+  background: var(--c-success);
+}
+
 .bar__fill--info {
   background: var(--c-info);
 }
 
 .bar__fill--muted {
-  background: #b8b1a4;
+  background: #c7c7cc;
 }

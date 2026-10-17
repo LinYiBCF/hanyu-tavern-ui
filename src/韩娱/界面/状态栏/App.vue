@@ -1,6 +1,6 @@
 <template>
   <div class="ap-scope" :class="`ap-font--${font_style}`">
-    <!-- ── 折叠态：浮在壁纸上的液态玻璃岛 ── -->
+    <!-- ── 折叠态：液态玻璃悬浮灵动岛 ── -->
     <button
       type="button"
       class="ap-island"
@@ -18,68 +18,79 @@
       </svg>
     </button>
 
-    <!-- ── 展开态：4:3 画幅 ── -->
+    <!-- ── 展开态：4:3 分栏 ── -->
     <div class="ap-stage" :class="{ 'ap-stage--open': is_open }">
       <div class="ap-stage__clip">
         <div class="ap-frame">
-          <!-- 左：竖排入口 -->
-          <aside class="ap-rail">
-            <div class="ap-rail__id">
-              <span class="ap-rail__name">{{ name_display }}</span>
-              <span v-if="role_line" class="ap-rail__role">{{ role_line }}</span>
+          <!-- 顶部通透胶囊栏 -->
+          <header class="ap-top">
+            <div class="ap-top__left">
+              <span class="ap-top__dot" :class="`ap-top__dot--${dot_tone}`"></span>
+              <span class="ap-top__name">{{ name_display }}</span>
             </div>
 
-            <nav class="ap-rail__nav" role="tablist">
+            <div class="ap-top__center">
+              <span class="ap-pill">{{ store.data.世界.世代 }}</span>
+              <span class="ap-pill">{{ store.data.世界.当前场域 }}</span>
+              <span v-if="store.data.世界.当前场景" class="ap-pill ap-pill--on">{{
+                store.data.世界.当前场景
+              }}</span>
+            </div>
+
+            <div class="ap-top__right">{{ clock_line }}</div>
+          </header>
+
+          <!-- 主体分栏 -->
+          <div class="ap-split">
+            <!-- 左侧垂直子菜单 -->
+            <nav class="ap-sidebar" role="tablist">
               <button
                 v-for="tab in tabs"
                 :key="tab.id"
                 type="button"
-                class="ap-rail__item"
-                :class="{ 'ap-rail__item--on': active_tab === tab.id }"
+                class="ap-nav"
+                :class="{ 'ap-nav--on': active_tab === tab.id }"
                 role="tab"
                 :aria-selected="active_tab === tab.id"
                 @click="active_tab = tab.id"
               >
-                <span class="ap-rail__tick"></span>
-                <span class="ap-rail__label">{{ tab.label }}</span>
-                <span class="ap-rail__en">{{ tab.en }}</span>
+                <svg class="ap-nav__icon" viewBox="0 0 24 24" v-html="tab.svg"></svg>
+                <span class="ap-nav__label">{{ tab.label }}</span>
               </button>
+
+              <div class="ap-sidebar__foot">
+                <div class="ap-font" role="group" aria-label="字体">
+                  <button
+                    v-for="f in fonts"
+                    :key="f.id"
+                    type="button"
+                    class="ap-font__btn"
+                    :class="{ 'ap-font__btn--on': font_style === f.id }"
+                    @click="font_style = f.id"
+                  >
+                    {{ f.label }}
+                  </button>
+                </div>
+              </div>
             </nav>
 
-            <div class="ap-rail__foot">
-              <div class="ap-rail__clock">{{ clock_line }}</div>
-              <div class="ap-rail__font" role="group" aria-label="字体">
-                <button
-                  v-for="f in fonts"
-                  :key="f.id"
-                  type="button"
-                  class="ap-rail__fontbtn"
-                  :class="{ 'ap-rail__fontbtn--on': font_style === f.id }"
-                  @click="font_style = f.id"
-                >
-                  {{ f.label }}
-                </button>
+            <!-- 右侧内容 -->
+            <main class="ap-content">
+              <div class="ap-content__inner">
+                <HeroPanel v-if="active_tab === '主角'" />
+                <CareerPanel v-else-if="active_tab === '成绩'" />
+                <PublicPanel v-else-if="active_tab === '舆论'" />
+                <RelationPanel v-else-if="active_tab === '关系'" />
+                <FinancePanel v-else-if="active_tab === '财务'" />
+                <BodyPanel v-else />
               </div>
-            </div>
-          </aside>
+            </main>
+          </div>
 
-          <!-- 右：内容 -->
-          <main class="ap-main">
-            <HeaderBar />
-
-            <div class="ap-body">
-              <HeroPanel v-if="active_tab === '主角'" />
-              <CareerPanel v-else-if="active_tab === '成绩'" />
-              <PublicPanel v-else-if="active_tab === '舆论'" />
-              <RelationPanel v-else-if="active_tab === '关系'" />
-              <FinancePanel v-else-if="active_tab === '财务'" />
-              <BodyPanel v-else />
-            </div>
-
-            <footer class="ap-foot">
-              <span class="ap-foot__hint">{{ mechanic_hint }}</span>
-            </footer>
-          </main>
+          <!-- 底部箴言 -->
+          <footer class="ap-foot">
+            <span class="ap-foot__text">{{ mechanic_hint }}</span>
+          </footer>
         </div>
       </div>
     </div>
@@ -91,7 +102,6 @@ import { useDataStore } from '../store';
 import BodyPanel from './components/BodyPanel.vue';
 import CareerPanel from './components/CareerPanel.vue';
 import FinancePanel from './components/FinancePanel.vue';
-import HeaderBar from './components/HeaderBar.vue';
 import HeroPanel from './components/HeroPanel.vue';
 import PublicPanel from './components/PublicPanel.vue';
 import RelationPanel from './components/RelationPanel.vue';
@@ -99,12 +109,36 @@ import RelationPanel from './components/RelationPanel.vue';
 const store = useDataStore();
 
 const tabs = [
-  { id: '主角', label: '主角', en: 'IDOL' },
-  { id: '成绩', label: '成绩', en: 'CHARTS' },
-  { id: '舆论', label: '舆论', en: 'BUZZ' },
-  { id: '关系', label: '关系', en: 'TIES' },
-  { id: '财务', label: '财务', en: 'MONEY' },
-  { id: '身体', label: '身体', en: 'BODY' },
+  {
+    id: '主角',
+    label: '主角',
+    svg: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  },
+  {
+    id: '成绩',
+    label: '成绩',
+    svg: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  },
+  {
+    id: '舆论',
+    label: '舆论',
+    svg: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  },
+  {
+    id: '关系',
+    label: '关系',
+    svg: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  },
+  {
+    id: '财务',
+    label: '财务',
+    svg: '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',
+  },
+  {
+    id: '身体',
+    label: '身体',
+    svg: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  },
 ];
 
 const fonts = [
@@ -176,21 +210,16 @@ const mechanic_hint = computed(() => {
   align-items: center;
   gap: 9px;
   width: 100%;
-  height: 42px;
-  padding: 0 16px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--c-glass-edge);
   border-radius: 999px;
-  background: linear-gradient(
-    170deg,
-    rgba(255, 253, 248, 0.9) 0%,
-    rgba(255, 250, 240, 0.72) 100%
-  );
+  background: var(--c-glass);
   backdrop-filter: var(--glass);
   -webkit-backdrop-filter: var(--glass);
   box-shadow:
     var(--lift),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(120, 104, 78, 0.07);
+    inset 0 1px 0 #ffffff;
   color: var(--c-text);
   font-family: var(--font-ui);
   cursor: pointer;
@@ -206,16 +235,15 @@ const mechanic_hint = computed(() => {
   transform: translateY(-1px);
   box-shadow:
     var(--lift-hi),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    inset 0 1px 0 #ffffff;
 }
 
 .ap-island--open {
-  border-radius: 22px 22px 0 0;
+  border-radius: 24px 24px 0 0;
   border-bottom-color: transparent;
   box-shadow: var(--lift);
 }
 
-/* 高光扫过的那一层，让玻璃有厚度 */
 .ap-island__sheen {
   position: absolute;
   inset: 0;
@@ -223,10 +251,10 @@ const mechanic_hint = computed(() => {
   background: linear-gradient(
     100deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.65) 42%,
+    rgba(255, 255, 255, 0.9) 42%,
     rgba(255, 255, 255, 0) 58%
   );
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 .ap-island__led {
@@ -238,25 +266,25 @@ const mechanic_hint = computed(() => {
 }
 
 .ap-island__led--ok {
-  background: #2fbf4e;
-  box-shadow: 0 0 7px rgba(47, 191, 78, 0.7);
+  background: var(--c-ok);
+  box-shadow: 0 0 7px rgba(52, 199, 89, 0.6);
 }
 
 .ap-island__led--warn {
-  background: #ff9500;
-  box-shadow: 0 0 7px rgba(255, 149, 0, 0.7);
+  background: var(--c-warning);
+  box-shadow: 0 0 7px rgba(201, 120, 10, 0.55);
 }
 
 .ap-island__led--bad {
-  background: #ff3b30;
-  box-shadow: 0 0 7px rgba(255, 59, 48, 0.7);
+  background: var(--c-danger);
+  box-shadow: 0 0 7px rgba(224, 52, 43, 0.55);
 }
 
 .ap-island__name {
   position: relative;
   font-size: 13.5px;
-  font-weight: 650;
-  letter-spacing: -0.012em;
+  font-weight: 700;
+  letter-spacing: -0.015em;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -264,6 +292,7 @@ const mechanic_hint = computed(() => {
 .ap-island__role {
   position: relative;
   font-size: 11.5px;
+  font-weight: 500;
   color: var(--c-text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -277,7 +306,7 @@ const mechanic_hint = computed(() => {
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: 11.5px;
-  font-weight: 500;
+  font-weight: 550;
   color: var(--c-text-muted);
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
@@ -320,59 +349,122 @@ const mechanic_hint = computed(() => {
   overflow: hidden;
 }
 
-/* 4:3 画幅，边框一路连到岛上 */
+/* 4:3 画幅 */
 .ap-frame {
   display: grid;
-  grid-template-columns: 176px 1fr;
+  grid-template-rows: auto 1fr auto;
   width: 100%;
   aspect-ratio: 4 / 3;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--c-glass-edge);
   border-top: none;
-  border-radius: 0 0 22px 22px;
-  background: linear-gradient(165deg, rgba(255, 253, 248, 0.93) 0%, rgba(250, 245, 235, 0.88) 100%);
+  border-radius: 0 0 24px 24px;
+  background: var(--c-shell);
   backdrop-filter: var(--glass);
   -webkit-backdrop-filter: var(--glass);
-  box-shadow:
-    var(--lift-hi),
-    inset 0 -1px 0 rgba(120, 104, 78, 0.06);
+  box-shadow: var(--lift-hi);
   overflow: hidden;
 }
 
-/* ── 左栏 ── */
-.ap-rail {
+/* ── 顶部胶囊栏 ── */
+.ap-top {
   display: flex;
-  flex-direction: column;
-  padding: 18px 0 14px;
-  border-right: 1px solid var(--c-border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(246, 240, 229, 0.3) 100%);
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--c-bar);
+  border-bottom: 0.5px solid #efefef;
 }
 
-.ap-rail__id {
+.ap-top__left {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 0 18px 16px;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.ap-rail__name {
-  font-size: 15px;
+.ap-top__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ap-top__dot--ok {
+  background: var(--c-ok);
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+}
+
+.ap-top__dot--warn {
+  background: var(--c-warning);
+  box-shadow: 0 0 8px rgba(201, 120, 10, 0.45);
+}
+
+.ap-top__dot--bad {
+  background: var(--c-danger);
+  box-shadow: 0 0 8px rgba(224, 52, 43, 0.45);
+}
+
+.ap-top__name {
+  font-size: 12.5px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+  letter-spacing: -0.012em;
   color: var(--c-text);
+  white-space: nowrap;
 }
 
-.ap-rail__role {
+.ap-top__center {
+  display: flex;
+  gap: 6px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.ap-top__right {
+  font-family: var(--font-mono);
   font-size: 11px;
+  font-weight: 550;
   color: var(--c-text-muted);
-  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.ap-rail__nav {
+.ap-pill {
+  font-size: 10.5px;
+  font-weight: 400;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #efeff4;
+  color: var(--c-text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ap-pill--on {
+  background: #ebf3ff;
+  color: var(--c-primary);
+  font-weight: 500;
+}
+
+/* ── 分栏 ── */
+.ap-split {
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 左：图标竖排 */
+.ap-sidebar {
+  width: 82px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  padding: 0 10px;
+  gap: 6px;
+  padding: 12px 8px;
+  background: var(--c-rail);
+  border-right: 0.5px solid var(--c-border);
   overflow-y: auto;
   scrollbar-width: none;
 
@@ -381,202 +473,165 @@ const mechanic_hint = computed(() => {
   }
 }
 
-.ap-rail__item {
-  position: relative;
+.ap-nav {
   display: flex;
-  align-items: baseline;
-  gap: 7px;
-  width: 100%;
-  padding: 10px 10px 10px 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 4px;
   border: none;
-  border-radius: 9px;
+  border-radius: 14px;
   background: transparent;
-  color: var(--c-text-muted);
+  color: var(--c-text-faint);
   font-family: var(--font-ui);
-  text-align: left;
   cursor: pointer;
-  transition:
-    background 0.22s ease,
-    color 0.22s ease;
+  flex-shrink: 0;
+  transition: all 0.25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    background: rgba(120, 104, 78, 0.05);
+    background: rgba(0, 0, 0, 0.03);
     color: var(--c-text);
   }
-}
 
-.ap-rail__tick {
-  position: absolute;
-  left: 3px;
-  top: 50%;
-  width: 3px;
-  height: 0;
-  border-radius: 2px;
-  background: var(--c-text);
-  transform: translateY(-50%);
-  transition: height 0.28s var(--ease);
-}
-
-.ap-rail__label {
-  font-size: 13px;
-  font-weight: 550;
-  letter-spacing: 0.01em;
-}
-
-.ap-rail__en {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 8.5px;
-  letter-spacing: 0.1em;
-  color: var(--c-text-faint);
-  opacity: 0;
-  transition: opacity 0.22s ease;
-}
-
-.ap-rail__item--on {
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--c-text);
-  box-shadow:
-    0 2px 8px rgba(74, 60, 38, 0.08),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.9);
-
-  .ap-rail__tick {
-    height: 15px;
-  }
-
-  .ap-rail__label {
-    font-weight: 700;
-  }
-
-  .ap-rail__en {
-    opacity: 1;
-    color: var(--c-text-muted);
+  :deep(svg) {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 }
 
-.ap-rail__foot {
-  margin-top: auto;
-  padding: 14px 18px 0;
-  border-top: 1px solid var(--c-border);
+.ap-nav__icon {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
-.ap-rail__clock {
-  font-family: var(--font-mono);
+.ap-nav__label {
   font-size: 11px;
-  color: var(--c-text-muted);
-  font-variant-numeric: tabular-nums;
-  margin-bottom: 11px;
+  font-weight: 500;
 }
 
-.ap-rail__font {
-  display: flex;
+.ap-nav--on {
+  background: #ffffff;
+  color: var(--c-primary);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+
+  .ap-nav__label {
+    font-weight: 600;
+  }
+}
+
+.ap-sidebar__foot {
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.ap-font {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 3px;
 }
 
-.ap-rail__fontbtn {
-  flex: 1 1 0;
+.ap-font__btn {
   padding: 5px 0;
   border: none;
   border-radius: 6px;
-  background: rgba(120, 104, 78, 0.06);
+  background: var(--c-sunken);
   color: var(--c-text-faint);
   font-family: var(--font-ui);
   font-size: 10px;
-  font-weight: 550;
+  font-weight: 500;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+  transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
+    background: var(--c-border);
     color: var(--c-text);
   }
 }
 
-.ap-rail__fontbtn--on {
+.ap-font__btn--on {
   background: var(--c-text);
-  color: #fffdf9;
+  color: #ffffff;
+  font-weight: 600;
 }
 
-/* ── 右栏 ── */
-.ap-main {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+/* 右：内容 */
+.ap-content {
+  flex: 1;
   min-width: 0;
   min-height: 0;
+  background: #ffffff;
+  overflow: hidden;
 }
 
-.ap-body {
-  padding: 20px 24px 18px;
+.ap-content__inner {
+  height: 100%;
   overflow-y: auto;
-  min-height: 0;
+  padding: 18px 20px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(120, 104, 78, 0.22) transparent;
+  scrollbar-color: #d1d1d6 transparent;
 
   &::-webkit-scrollbar {
     width: 5px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(120, 104, 78, 0.22);
+    background: #d1d1d6;
     border-radius: 3px;
   }
 }
 
+/* ── 底部 ── */
 .ap-foot {
-  padding: 11px 24px 13px;
-  border-top: 1px solid var(--c-border);
+  padding: 10px 18px;
+  background: var(--c-bar);
+  border-top: 0.5px solid #efefef;
+  text-align: center;
 }
 
-.ap-foot__hint {
+.ap-foot__text {
   font-size: 11px;
-  color: var(--c-text-muted);
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  color: var(--c-text-faint);
   line-height: 1.5;
 }
 
-/* 窄屏：4:3 收不住，左栏压到 118px */
 @media (max-width: 620px) {
-  .ap-frame {
-    grid-template-columns: 118px 1fr;
+  .ap-sidebar {
+    width: 64px;
+    padding: 10px 6px;
   }
 
-  .ap-rail__id {
-    padding: 0 12px 14px;
+  .ap-nav {
+    padding: 9px 3px;
   }
 
-  .ap-rail__name {
-    font-size: 13px;
+  .ap-nav__label {
+    font-size: 10px;
   }
 
-  .ap-rail__nav {
-    padding: 0 7px;
+  .ap-content__inner {
+    padding: 14px 14px;
   }
 
-  .ap-rail__item {
-    padding: 9px 7px 9px 10px;
+  .ap-top {
+    padding: 10px 13px;
   }
 
-  .ap-rail__label {
-    font-size: 12px;
-  }
-
-  .ap-rail__en {
+  .ap-top__center {
     display: none;
   }
 
-  .ap-rail__foot {
-    padding: 12px 12px 0;
-  }
-
-  .ap-body {
-    padding: 16px 15px 14px;
-  }
-
-  .ap-foot {
-    padding: 10px 15px 11px;
+  .ap-font {
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>

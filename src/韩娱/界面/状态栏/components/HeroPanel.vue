@@ -1,69 +1,70 @@
 <template>
   <div class="wrap">
-    <!-- 身份：两列，无框，靠发丝线分 -->
-    <div class="grid2">
-      <div class="field">
-        <span class="field__k">国籍</span>
-        <span class="field__v">{{ store.data.主角.国籍 || '—' }}</span>
+    <!-- 身份：Bento 方格 -->
+    <div class="bento">
+      <div class="cell">
+        <span class="cell__k">国籍</span>
+        <span class="cell__v">{{ store.data.主角.国籍 || '—' }}</span>
       </div>
-      <div class="field">
-        <span class="field__k">性别</span>
-        <span class="field__v">{{ store.data.主角.性别 || '—' }}</span>
+      <div class="cell">
+        <span class="cell__k">性别</span>
+        <span class="cell__v">{{ store.data.主角.性别 || '—' }}</span>
       </div>
-      <div class="field">
-        <span class="field__k">出生</span>
-        <span class="field__v field__v--num">{{ store.data.主角.出生日期 || '—' }}</span>
+      <div class="cell">
+        <span class="cell__k">出生</span>
+        <span class="cell__v cell__v--num">{{ store.data.主角.出生日期 || '—' }}</span>
       </div>
-      <div class="field">
-        <span class="field__k">身高体重</span>
-        <span class="field__v field__v--num">{{ height_weight }}</span>
+      <div class="cell">
+        <span class="cell__k">身高体重</span>
+        <span class="cell__v cell__v--num">{{ height_weight }}</span>
       </div>
     </div>
 
-    <!-- 位置 -->
-    <section class="block">
-      <h4 class="block__h">位置</h4>
+    <!-- 资源等级卡 -->
+    <div class="rank">
+      <div class="rank__tag">RESOURCE LEVEL</div>
+      <div class="rank__title">{{ store.data.主角.事业.资源层级 }}</div>
+      <div class="rank__sub">{{ tier_note }}</div>
+    </div>
 
-      <div class="tier">
-        <span class="tier__v">{{ store.data.主角.事业.资源层级 }}</span>
-        <span class="tier__sub">{{ tier_note }}</span>
-      </div>
-
-      <div class="meter">
-        <div class="meter__row">
-          <span class="meter__k">人气</span>
-          <span class="meter__v">{{ store.data.主角.事业.人气 }}</span>
+    <!-- 人气与实力 -->
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric__meta">
+          <span class="metric__k">人气 (Popularity)</span>
+          <strong class="metric__v">{{ store.data.主角.事业.人气 }} / 100</strong>
         </div>
-        <div class="bar">
-          <div class="bar__fill bar__fill--accent" :style="{ width: pct(store.data.主角.事业.人气) }"></div>
-        </div>
-      </div>
-
-      <div class="meter">
-        <div class="meter__row">
-          <span class="meter__k">实力</span>
-          <span class="meter__v">{{ store.data.主角.事业.实力 }}</span>
-        </div>
-        <div class="bar">
-          <div class="bar__fill bar__fill--muted" :style="{ width: pct(store.data.主角.事业.实力) }"></div>
+        <div class="track">
+          <div class="track__fill" :style="{ width: pct(store.data.主角.事业.人气) }"></div>
         </div>
       </div>
-    </section>
 
-    <section v-if="store.data.主角.体型外貌" class="block">
-      <h4 class="block__h">外貌</h4>
-      <p class="prose">{{ store.data.主角.体型外貌 }}</p>
-    </section>
+      <div class="metric">
+        <div class="metric__meta">
+          <span class="metric__k">实力 (Vocal &amp; Dance)</span>
+          <strong class="metric__v">{{ store.data.主角.事业.实力 }} / 100</strong>
+        </div>
+        <div class="track">
+          <div class="track__fill track__fill--light" :style="{ width: pct(store.data.主角.事业.实力) }"></div>
+        </div>
+      </div>
+    </div>
 
-    <section v-if="store.data.主角.过往经历" class="block">
-      <h4 class="block__h">过往</h4>
-      <p class="prose">{{ store.data.主角.过往经历 }}</p>
-    </section>
-
-    <section v-if="store.data.主角.当前位置" class="block">
-      <h4 class="block__h">现在</h4>
-      <p class="prose">{{ store.data.主角.当前位置 }}</p>
-    </section>
+    <!-- 文本速览 -->
+    <div v-if="has_bio" class="bio">
+      <div v-if="store.data.主角.体型外貌" class="bio__row">
+        <span class="bio__k">体型外貌</span>
+        <p class="bio__v">{{ store.data.主角.体型外貌 }}</p>
+      </div>
+      <div v-if="store.data.主角.过往经历" class="bio__row">
+        <span class="bio__k">过往经历</span>
+        <p class="bio__v">{{ store.data.主角.过往经历 }}</p>
+      </div>
+      <div v-if="store.data.主角.当前位置" class="bio__row">
+        <span class="bio__k">当前位置</span>
+        <p class="bio__v">{{ store.data.主角.当前位置 }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -86,6 +87,13 @@ const height_weight = computed(() => {
   if (w) return `${w.toFixed(1)}kg`;
   return '—';
 });
+
+const has_bio = computed(
+  () =>
+    Boolean(store.data.主角.体型外貌) ||
+    Boolean(store.data.主角.过往经历) ||
+    Boolean(store.data.主角.当前位置),
+);
 
 /** 层级说明书，只用一句话，不评价 */
 const tier_note = computed(() => {
@@ -112,119 +120,156 @@ const tier_note = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 12px;
 }
 
-/* ── 身份：无框表格 ── */
-.grid2 {
+/* ── Bento 方格 ── */
+.bento {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 26px;
+  gap: 10px;
 }
 
-.field {
+.cell {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--c-border);
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--c-sunken);
 }
 
-.field__k {
-  font-size: 11px;
-  font-weight: 550;
+.cell__k {
+  font-size: 12px;
+  font-weight: 400;
   color: var(--c-text-faint);
-  letter-spacing: 0.05em;
   flex-shrink: 0;
 }
 
-.field__v {
-  font-size: 13px;
+.cell__v {
+  font-size: 12px;
   font-weight: 600;
   color: var(--c-text);
-  text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.field__v--num {
+.cell__v--num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.015em;
+  font-size: 11.5px;
 }
 
-/* ── 区块标题 ── */
-.block__h {
+/* ── 资源等级卡 ── */
+.rank {
+  padding: 16px;
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  background: var(--c-bar);
+}
+
+.rank__tag {
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.12em;
   color: var(--c-text-faint);
-  margin-bottom: 11px;
 }
 
-/* ── 资源层级 ── */
-.tier {
+.rank__title {
+  margin: 4px 0 2px;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  color: var(--c-text);
+}
+
+.rank__sub {
+  font-size: 11.5px;
+  color: var(--c-text-muted);
+  line-height: 1.5;
+}
+
+/* ── 指标 ── */
+.metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metric {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding-bottom: 15px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid var(--c-border);
 }
 
-.tier__v {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.1;
-  color: var(--c-text);
-}
-
-.tier__sub {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--c-text-muted);
-  line-height: 1.55;
-}
-
-.meter {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  & + & {
-    margin-top: 14px;
-  }
-}
-
-.meter__row {
+.metric__meta {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  gap: 10px;
 }
 
-.meter__k {
+.metric__k {
   font-size: 11.5px;
-  font-weight: 550;
   color: var(--c-text-muted);
 }
 
-.meter__v {
+.metric__v {
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--c-text);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.prose {
-  font-size: 12.5px;
-  line-height: 1.8;
-  color: var(--c-text-muted);
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--c-border);
+  overflow: hidden;
+}
+
+.track__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--c-text);
+  transition: width 0.5s var(--ease);
+}
+
+.track__fill--light {
+  background: var(--c-text-faint);
+}
+
+/* ── 文本卡 ── */
+.bio {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--c-sunken);
+}
+
+.bio__row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bio__k {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--c-text-faint);
+}
+
+.bio__v {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #3a3a3c;
   white-space: pre-wrap;
-  letter-spacing: 0.005em;
-  font-weight: 500;
 }
 </style>

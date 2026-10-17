@@ -1,60 +1,53 @@
 <template>
   <div class="wrap">
-    <!-- 状态：一行字，一个点 -->
+    <!-- 状态 -->
     <div class="state">
       <span class="state__dot" :class="`state__dot--${state_tone}`"></span>
       <span class="state__label">{{ store.data.身体.状态 }}</span>
       <span class="state__sub">{{ state_hint }}</span>
     </div>
 
-    <!-- 体重：第一个放大数字 -->
-    <div class="weight">
-      <div class="weight__head">
-        <span class="weight__k">体重</span>
-        <span class="weight__v">
-          <span v-if="store.data.主角.体重 > 0" class="weight__num">{{ weight_text }}</span>
-          <span v-else class="weight__num weight__num--empty">—</span>
-          <span v-if="store.data.主角.体重 > 0" class="weight__unit">kg</span>
-          <span
-            v-if="store.data.主角.体重 > 0 && store.data.主角.体重趋势 === '升'"
-            class="tri tri--up"
-            >▲</span
-          >
-          <span
-            v-if="store.data.主角.体重 > 0 && store.data.主角.体重趋势 === '降'"
-            class="tri tri--down"
-            >▼</span
-          >
+    <!-- 体重卡 -->
+    <div class="rank">
+      <div class="rank__tag">BODY WEIGHT</div>
+      <div class="rank__hero">
+        <span class="rank__n">
+          <template v-if="store.data.主角.体重 > 0">{{ weight_text }}</template>
+          <template v-else>—</template>
         </span>
+        <span v-if="store.data.主角.体重 > 0" class="rank__u">kg</span>
+        <span v-if="store.data.主角.体重 > 0 && store.data.主角.体重趋势 === '升'" class="tri tri--up">▲</span>
+        <span v-if="store.data.主角.体重 > 0 && store.data.主角.体重趋势 === '降'" class="tri tri--down">▼</span>
       </div>
-      <p v-if="store.data.主角.体重原因" class="weight__why">{{ store.data.主角.体重原因 }}</p>
-      <p v-else class="weight__why weight__why--empty">秤上的数字每天都在往上走一点</p>
-      <p v-if="store.data.主角.体重 > 0" class="weight__daily">
-        <span class="weight__daily-k">日底盘</span>
-        <span class="weight__daily-v" :class="`weight__daily-v--${base_tone}`">+{{ base_rate }}</span>
-        <span class="weight__daily-kg">kg / 天</span>
-        <span v-if="loop_warning" class="weight__loop">· {{ loop_warning }}</span>
-      </p>
+      <p class="rank__hint">{{ store.data.主角.体重原因 || '秤上的数字每天都在往上走一点' }}</p>
+
+      <div v-if="store.data.主角.体重 > 0" class="daily">
+        <span class="daily__k">日底盘</span>
+        <span class="daily__v" :class="`daily__v--${base_tone}`">+{{ base_rate }}</span>
+        <span class="daily__kg">kg / 天</span>
+        <span v-if="loop_warning" class="daily__loop">· {{ loop_warning }}</span>
+      </div>
     </div>
 
-    <!-- 疲劳：第二个放大数字 -->
+    <!-- 疲劳卡 -->
     <div class="fatigue">
       <div class="fatigue__head">
         <span class="fatigue__k">疲劳</span>
         <span class="fatigue__v" :class="{ 'fatigue__v--hot': store.data.身体.疲劳 >= 70 }">
-          {{ store.data.身体.疲劳 }}
+          {{ store.data.身体.疲劳 }}<span class="fatigue__u">/100</span>
         </span>
       </div>
-      <div class="bar">
-        <div class="bar__fill" :class="fatigue_class" :style="{ width: pct(store.data.身体.疲劳) }"></div>
+      <div class="track">
+        <div class="track__fill" :class="fatigue_class" :style="{ width: pct(store.data.身体.疲劳) }"></div>
       </div>
       <p class="fatigue__hint">{{ fatigue_hint }}</p>
     </div>
 
-    <section v-if="store.data.身体.伤病" class="block">
-      <h4 class="block__h">伤病</h4>
-      <p class="prose">{{ store.data.身体.伤病 }}</p>
-    </section>
+    <!-- 伤病 -->
+    <div v-if="store.data.身体.伤病" class="card">
+      <div class="card__h">伤病</div>
+      <p class="card__p">{{ store.data.身体.伤病 }}</p>
+    </div>
   </div>
 </template>
 
@@ -96,14 +89,14 @@ const state_hint = computed(() => {
 const weight_text = computed(() => {
   const w = store.data.主角.体重;
   if (!w) return '';
-  return `${w.toFixed(1)}`;
+  return w.toFixed(1);
 });
 
 const fatigue_class = computed(() => {
   const f = store.data.身体.疲劳;
-  if (f >= 70) return 'bar__fill--danger';
-  if (f >= 40) return 'bar__fill--warning';
-  return 'bar__fill--accent';
+  if (f >= 70) return 'track__fill--danger';
+  if (f >= 40) return 'track__fill--warn';
+  return '';
 });
 
 const fatigue_hint = computed(() => {
@@ -144,7 +137,7 @@ const loop_warning = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 12px;
 }
 
 /* ── 状态 ── */
@@ -152,8 +145,9 @@ const loop_warning = computed(() => {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--c-border);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--c-sunken);
 }
 
 .state__dot {
@@ -164,26 +158,26 @@ const loop_warning = computed(() => {
 }
 
 .state__dot--ok {
-  background: #2fbf4e;
-  box-shadow: 0 0 7px rgba(47, 191, 78, 0.6);
+  background: var(--c-ok);
+  box-shadow: 0 0 7px rgba(52, 199, 89, 0.5);
 }
 
 .state__dot--mid {
-  background: #b8b1a4;
+  background: #c7c7cc;
 }
 
 .state__dot--warn {
-  background: #ff9500;
-  box-shadow: 0 0 7px rgba(255, 149, 0, 0.6);
+  background: var(--c-warning);
+  box-shadow: 0 0 7px rgba(249, 115, 22, 0.45);
 }
 
 .state__dot--bad {
-  background: #ff3b30;
-  box-shadow: 0 0 7px rgba(255, 59, 48, 0.6);
+  background: var(--c-danger);
+  box-shadow: 0 0 7px rgba(225, 29, 72, 0.45);
 }
 
 .state__label {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
   letter-spacing: -0.015em;
   color: var(--c-text);
@@ -191,64 +185,54 @@ const loop_warning = computed(() => {
 
 .state__sub {
   font-size: 11.5px;
-  font-weight: 500;
   color: var(--c-text-muted);
   line-height: 1.45;
 }
 
-/* ── 体重 ── */
-.weight {
+/* ── 体重卡 ── */
+.rank {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  background: var(--c-bar);
+}
+
+.rank__tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--c-text-faint);
+}
+
+.rank__hero {
+  display: flex;
+  align-items: baseline;
   gap: 6px;
 }
 
-.weight__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.weight__k {
-  font-size: 11px;
-  font-weight: 550;
-  color: var(--c-text-faint);
-  letter-spacing: 0.05em;
-}
-
-.weight__v {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 5px;
-}
-
-.weight__num {
+.rank__n {
   font-family: var(--font-mono);
-  font-size: 40px;
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--c-text);
 }
 
-.weight__num--empty {
-  color: var(--c-text-faint);
-}
-
-.weight__unit {
+.rank__u {
   font-family: var(--font-mono);
   font-size: 13px;
-  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.02em;
 }
 
 .tri {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1;
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
 .tri--up {
@@ -259,58 +243,51 @@ const loop_warning = computed(() => {
   color: var(--c-success);
 }
 
-.weight__why {
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.65;
+.rank__hint {
+  font-size: 11.5px;
   color: var(--c-text-muted);
+  line-height: 1.55;
 }
 
-.weight__why--empty {
-  color: var(--c-text-faint);
-}
-
-.weight__daily {
+.daily {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 5px;
-  margin-top: 7px;
+  margin-top: 4px;
   padding-top: 9px;
-  border-top: 1px solid var(--c-border);
+  border-top: 1px solid #efefef;
   font-size: 11px;
   line-height: 1.55;
 }
 
-.weight__daily-k {
+.daily__k {
   color: var(--c-text-faint);
-  font-weight: 550;
-  letter-spacing: 0.05em;
 }
 
-.weight__daily-v {
+.daily__v {
   font-family: var(--font-mono);
-  font-weight: 650;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.weight__daily-v--calm {
+.daily__v--calm {
   color: var(--c-text-muted);
 }
 
-.weight__daily-v--warm {
+.daily__v--warm {
   color: var(--c-warning);
 }
 
-.weight__daily-v--hot {
+.daily__v--hot {
   color: var(--c-danger);
 }
 
-.weight__daily-kg {
+.daily__kg {
   color: var(--c-text-faint);
 }
 
-.weight__loop {
+.daily__loop {
   color: var(--c-warning);
   font-weight: 600;
 }
@@ -319,9 +296,11 @@ const loop_warning = computed(() => {
 .fatigue {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding-top: 18px;
-  border-top: 1px solid var(--c-border);
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  background: #ffffff;
 }
 
 .fatigue__head {
@@ -331,16 +310,14 @@ const loop_warning = computed(() => {
 }
 
 .fatigue__k {
-  font-size: 11px;
-  font-weight: 550;
+  font-size: 11.5px;
   color: var(--c-text-faint);
-  letter-spacing: 0.05em;
 }
 
 .fatigue__v {
   font-family: var(--font-mono);
-  font-size: 30px;
-  font-weight: 400;
+  font-size: 22px;
+  font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -351,28 +328,60 @@ const loop_warning = computed(() => {
   color: var(--c-danger);
 }
 
+.fatigue__u {
+  margin-left: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-text-faint);
+}
+
 .fatigue__hint {
-  margin-top: 3px;
-  font-size: 11.5px;
-  font-weight: 500;
+  font-size: 11px;
   color: var(--c-text-faint);
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
-/* ── 伤病 ── */
-.block__h {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--c-text-faint);
-  margin-bottom: 10px;
+/* ── 伤病卡 ── */
+.card {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--c-sunken);
 }
 
-.prose {
-  font-size: 12.5px;
-  line-height: 1.8;
-  color: var(--c-text-muted);
+.card__h {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--c-text-faint);
+  margin-bottom: 4px;
+}
+
+.card__p {
+  font-size: 12px;
+  line-height: 1.55;
+  color: #3a3a3c;
   white-space: pre-wrap;
-  font-weight: 500;
+}
+
+/* ── 通用条 ── */
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--c-border);
+  overflow: hidden;
+}
+
+.track__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--c-text);
+  transition: width 0.5s var(--ease);
+}
+
+.track__fill--warn {
+  background: var(--c-warning);
+}
+
+.track__fill--danger {
+  background: var(--c-danger);
 }
 </style>

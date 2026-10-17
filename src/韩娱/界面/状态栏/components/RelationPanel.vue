@@ -1,7 +1,8 @@
 <template>
   <div class="wrap">
-    <section class="block">
-      <h4 class="block__h">恋爱线</h4>
+    <!-- 恋爱线 -->
+    <div class="card">
+      <div class="card__h">恋爱线</div>
       <p v-if="!lovers.length" class="empty">还没有一条线走到需要记下来的程度</p>
       <div v-else class="lines">
         <article v-for="l in lovers" :key="l.name" class="line">
@@ -12,29 +13,29 @@
 
           <div class="mini">
             <span class="mini__k">好感</span>
-            <div class="bar mini__bar">
-              <div class="bar__fill bar__fill--accent" :style="{ width: pct(l.好感度) }"></div>
+            <div class="track mini__track">
+              <div class="track__fill" :style="{ width: pct(l.好感度) }"></div>
             </div>
             <span class="mini__v">{{ l.好感度 }}</span>
           </div>
           <div class="mini">
             <span class="mini__k">信任</span>
-            <div class="bar mini__bar">
-              <div class="bar__fill bar__fill--muted" :style="{ width: pct(l.信任度) }"></div>
+            <div class="track mini__track">
+              <div class="track__fill track__fill--light" :style="{ width: pct(l.信任度) }"></div>
             </div>
             <span class="mini__v">{{ l.信任度 }}</span>
           </div>
           <div class="mini">
             <span class="mini__k">隐蔽</span>
-            <div class="bar mini__bar">
-              <div class="bar__fill bar__fill--muted" :style="{ width: pct(l.隐蔽度) }"></div>
+            <div class="track mini__track">
+              <div class="track__fill track__fill--light" :style="{ width: pct(l.隐蔽度) }"></div>
             </div>
             <span class="mini__v">{{ l.隐蔽度 }}</span>
           </div>
           <div class="mini">
             <span class="mini__k">曝险</span>
-            <div class="bar mini__bar">
-              <div class="bar__fill" :class="risk_class(l.曝光风险)" :style="{ width: pct(l.曝光风险) }"></div>
+            <div class="track mini__track">
+              <div class="track__fill" :class="risk_class(l.曝光风险)" :style="{ width: pct(l.曝光风险) }"></div>
             </div>
             <span class="mini__v" :class="{ 'mini__v--hot': l.曝光风险 >= 70 }">{{ l.曝光风险 }}</span>
           </div>
@@ -42,22 +43,23 @@
           <p v-if="l.曝光风险 >= 70" class="warn">已经进到会被拍到的距离</p>
         </article>
       </div>
-    </section>
+    </div>
 
-    <section class="block">
-      <h4 class="block__h">关系网</h4>
+    <!-- 关系网 -->
+    <div class="card">
+      <div class="card__h">关系网</div>
       <p v-if="!relations.length" class="empty">暂时没有需要标记立场的人</p>
       <div v-else class="rel">
         <div v-for="r in relations" :key="r.name" class="rel__row">
           <span class="rel__name">{{ r.name }}</span>
           <span class="tag" :class="`tag--${r.tone}`">{{ r.立场 }}</span>
-          <div class="bar rel__bar">
-            <div class="bar__fill bar__fill--muted" :style="{ width: pct(r.张力) }"></div>
+          <div class="track rel__track">
+            <div class="track__fill track__fill--light" :style="{ width: pct(r.张力) }"></div>
           </div>
           <span class="rel__v">{{ r.张力 }}</span>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -71,9 +73,9 @@ function pct(v: number) {
 }
 
 function risk_class(v: number) {
-  if (v >= 70) return 'bar__fill--danger';
-  if (v >= 40) return 'bar__fill--warning';
-  return 'bar__fill--muted';
+  if (v >= 70) return 'track__fill--danger';
+  if (v >= 40) return 'track__fill--warn';
+  return 'track__fill--light';
 }
 
 const lovers = computed(() =>
@@ -106,20 +108,26 @@ const relations = computed(() =>
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
-.block__h {
+.card {
+  padding: 14px;
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.card__h {
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.12em;
   color: var(--c-text-faint);
-  margin-bottom: 11px;
+  margin-bottom: 10px;
 }
 
 .empty {
   font-size: 12px;
-  font-weight: 500;
   color: var(--c-text-faint);
   line-height: 1.65;
 }
@@ -128,20 +136,13 @@ const relations = computed(() =>
 .lines {
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .line {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--c-border);
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--c-sunken);
 }
 
 .line__head {
@@ -149,11 +150,11 @@ const relations = computed(() =>
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 11px;
+  margin-bottom: 10px;
 }
 
 .line__name {
-  font-size: 15.5px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--c-text);
@@ -161,10 +162,10 @@ const relations = computed(() =>
 
 .line__stage {
   font-size: 10px;
-  font-weight: 650;
+  font-weight: 600;
   padding: 2.5px 9px;
   border-radius: 999px;
-  background: var(--c-sunken);
+  background: #ffffff;
   white-space: nowrap;
 }
 
@@ -183,29 +184,28 @@ const relations = computed(() =>
 
 .mini {
   display: grid;
-  grid-template-columns: 30px 1fr 28px;
-  gap: 11px;
+  grid-template-columns: 28px 1fr 26px;
+  gap: 10px;
   align-items: center;
 
   & + & {
-    margin-top: 7px;
+    margin-top: 6px;
   }
 }
 
 .mini__k {
   font-size: 10.5px;
-  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.04em;
 }
 
-.mini__bar {
-  height: 3px;
+.mini__track {
+  height: 4px;
+  background: #ffffff;
 }
 
 .mini__v {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   color: var(--c-text-muted);
   text-align: right;
@@ -219,9 +219,8 @@ const relations = computed(() =>
 .warn {
   margin-top: 9px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--c-danger);
-  letter-spacing: 0.01em;
 }
 
 /* ── 关系网 ── */
@@ -232,20 +231,25 @@ const relations = computed(() =>
 
 .rel__row {
   display: grid;
-  grid-template-columns: 1fr auto 60px 24px;
+  grid-template-columns: 1fr auto 56px 22px;
   gap: 10px;
   align-items: center;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--c-border);
+  padding: 8px 0;
+  border-bottom: 1px solid #efefef;
 
   &:last-child {
     border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
   }
 }
 
 .rel__name {
   font-size: 12.5px;
-  font-weight: 550;
+  font-weight: 500;
   color: var(--c-text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -254,7 +258,7 @@ const relations = computed(() =>
 
 .tag {
   font-size: 10px;
-  font-weight: 650;
+  font-weight: 600;
   padding: 1.5px 8px;
   border-radius: 999px;
   background: var(--c-sunken);
@@ -273,8 +277,8 @@ const relations = computed(() =>
   color: var(--c-danger);
 }
 
-.rel__bar {
-  height: 3px;
+.rel__track {
+  height: 4px;
 }
 
 .rel__v {
@@ -284,5 +288,32 @@ const relations = computed(() =>
   color: var(--c-text-faint);
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* ── 通用条 ── */
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--c-border);
+  overflow: hidden;
+}
+
+.track__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--c-text);
+  transition: width 0.5s var(--ease);
+}
+
+.track__fill--light {
+  background: var(--c-text-faint);
+}
+
+.track__fill--warn {
+  background: var(--c-warning);
+}
+
+.track__fill--danger {
+  background: var(--c-danger);
 }
 </style>

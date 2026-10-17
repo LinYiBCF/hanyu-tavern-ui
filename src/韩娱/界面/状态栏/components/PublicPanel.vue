@@ -1,15 +1,17 @@
 <template>
   <div class="wrap">
-    <!-- 热度 -->
-    <div class="heat">
-      <div class="heat__head">
-        <span class="heat__n" :class="{ 'heat__n--hot': store.data.舆论.热度 >= 70 }">
+    <!-- 风评卡 -->
+    <div class="rank">
+      <div class="rank__tag">PUBLIC SENTIMENT</div>
+      <div class="rank__hero">
+        <span class="rank__n" :class="{ 'rank__n--hot': store.data.舆论.热度 >= 70 }">
           {{ store.data.舆论.热度 }}
         </span>
+        <span class="rank__u">% 热度</span>
         <span class="tag" :class="`tag--${rating_tone}`">{{ store.data.舆论.风评 }}</span>
       </div>
-      <div class="bar heat__bar">
-        <div class="bar__fill" :class="heat_bar_class" :style="{ width: pct(store.data.舆论.热度) }"></div>
+      <div class="track">
+        <div class="track__fill" :class="heat_fill_class" :style="{ width: pct(store.data.舆论.热度) }"></div>
       </div>
       <p v-if="store.data.舆论.危机倒计时" class="crisis">
         <span class="crisis__k">倒计时</span>
@@ -17,21 +19,23 @@
       </p>
     </div>
 
-    <section v-if="store.data.舆论.当前议题.length" class="block">
-      <h4 class="block__h">当前议题</h4>
+    <!-- 当前议题 -->
+    <div v-if="store.data.舆论.当前议题.length" class="card">
+      <div class="card__h">当前议题</div>
       <ul class="issues">
         <li v-for="(issue, i) in store.data.舆论.当前议题" :key="i" class="issue">{{ issue }}</li>
       </ul>
-    </section>
+    </div>
 
-    <section class="block">
-      <h4 class="block__h">粉丝</h4>
-      <div class="fan-head">
-        <span class="fan-size">{{ store.data.粉丝.规模 || '尚未成气候' }}</span>
-        <span class="fan-power">{{ store.data.粉丝.应援力 }}</span>
+    <!-- 粉丝 -->
+    <div class="card">
+      <div class="card__h">粉丝</div>
+      <div class="fan__head">
+        <span class="fan__size">{{ store.data.粉丝.规模 || '尚未成气候' }}</span>
+        <span class="fan__power">应援力 {{ store.data.粉丝.应援力 }}</span>
       </div>
-      <div class="bar">
-        <div class="bar__fill bar__fill--accent" :style="{ width: pct(store.data.粉丝.应援力) }"></div>
+      <div class="track">
+        <div class="track__fill" :style="{ width: pct(store.data.粉丝.应援力) }"></div>
       </div>
 
       <div class="comp">
@@ -40,12 +44,14 @@
             <span class="comp__k">{{ c.k }}</span>
             <span class="comp__v">{{ c.v }}</span>
           </div>
-          <div class="bar comp__bar">
-            <div class="bar__fill bar__fill--muted" :style="{ width: pct(c.v) }"></div>
+          <div class="track comp__track">
+            <div class="track__fill track__fill--light" :style="{ width: pct(c.v) }"></div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+
+    <div v-if="empty_hint" class="hint">{{ empty_hint }}</div>
   </div>
 </template>
 
@@ -69,6 +75,12 @@ const composition = computed(() => {
   ];
 });
 
+const empty_hint = computed(() => {
+  const a = store.data.舆论;
+  if (!a.热度 && !a.危机倒计时 && !a.当前议题.length) return '当前无发酵中的公共危机议题';
+  return '';
+});
+
 const rating_tone = computed(() => {
   switch (store.data.舆论.风评) {
     case '正向':
@@ -82,11 +94,11 @@ const rating_tone = computed(() => {
   }
 });
 
-const heat_bar_class = computed(() => {
+const heat_fill_class = computed(() => {
   const h = store.data.舆论.热度;
-  if (h >= 70) return 'bar__fill--danger';
-  if (h >= 40) return 'bar__fill--warning';
-  return 'bar__fill--accent';
+  if (h >= 70) return 'track__fill--danger';
+  if (h >= 40) return 'track__fill--warn';
+  return '';
 });
 </script>
 
@@ -94,46 +106,60 @@ const heat_bar_class = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 22px;
-}
-
-.heat {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.heat__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   gap: 12px;
 }
 
-.heat__n {
-  font-family: var(--font-mono);
-  font-size: 42px;
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+/* ── 风评卡 ── */
+.rank {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  background: var(--c-bar);
 }
 
-.heat__n--hot {
+.rank__tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--c-text-faint);
+}
+
+.rank__hero {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rank__n {
+  font-family: var(--font-mono);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-text);
+}
+
+.rank__n--hot {
   color: var(--c-danger);
 }
 
-.heat__bar {
-  height: 3px;
+.rank__u {
+  font-size: 12px;
+  color: var(--c-text-muted);
 }
 
 .tag {
+  margin-left: auto;
   font-size: 10.5px;
-  font-weight: 650;
+  font-weight: 600;
   padding: 3px 10px;
   border-radius: 999px;
   background: var(--c-sunken);
-  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
@@ -160,7 +186,7 @@ const heat_bar_class = computed(() => {
   margin-top: 4px;
   padding: 9px 12px;
   border-radius: var(--radius-sm);
-  background: rgba(224, 52, 43, 0.07);
+  background: #fff1f2;
 }
 
 .crisis__k {
@@ -173,17 +199,24 @@ const heat_bar_class = computed(() => {
 
 .crisis__v {
   font-size: 12px;
-  font-weight: 550;
   color: var(--c-danger);
   line-height: 1.55;
 }
 
-.block__h {
+/* ── 卡片 ── */
+.card {
+  padding: 14px;
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.card__h {
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.12em;
   color: var(--c-text-faint);
-  margin-bottom: 11px;
+  margin-bottom: 10px;
 }
 
 .issues {
@@ -194,11 +227,10 @@ const heat_bar_class = computed(() => {
 }
 
 .issue {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--c-text);
-  padding-left: 13px;
   position: relative;
+  padding-left: 13px;
+  font-size: 12.5px;
+  color: var(--c-text);
   line-height: 1.65;
 
   &::before {
@@ -213,7 +245,8 @@ const heat_bar_class = computed(() => {
   }
 }
 
-.fan-head {
+/* ── 粉丝 ── */
+.fan__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -221,37 +254,36 @@ const heat_bar_class = computed(() => {
   margin-bottom: 8px;
 }
 
-.fan-size {
+.fan__size {
   font-size: 13px;
   font-weight: 600;
   color: var(--c-text);
 }
 
-.fan-power {
+.fan__power {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 11.5px;
   font-weight: 600;
-  color: var(--c-text);
+  color: var(--c-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .comp {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 13px 22px;
-  margin-top: 17px;
+  gap: 10px 18px;
+  margin-top: 14px;
 }
 
 .comp__meta {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .comp__k {
   font-size: 11px;
-  font-weight: 550;
   color: var(--c-text-faint);
 }
 
@@ -263,7 +295,40 @@ const heat_bar_class = computed(() => {
   font-variant-numeric: tabular-nums;
 }
 
-.comp__bar {
-  height: 3px;
+.comp__track {
+  height: 4px;
+}
+
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--c-border);
+  overflow: hidden;
+}
+
+.track__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--c-text);
+  transition: width 0.5s var(--ease);
+}
+
+.track__fill--light {
+  background: var(--c-text-faint);
+}
+
+.track__fill--warn {
+  background: var(--c-warning);
+}
+
+.track__fill--danger {
+  background: var(--c-danger);
+}
+
+.hint {
+  padding: 3px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--c-text-faint);
 }
 </style>

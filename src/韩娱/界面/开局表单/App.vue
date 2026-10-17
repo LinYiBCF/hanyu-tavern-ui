@@ -491,14 +491,14 @@ async function submit() {
   width: 100%;
   max-width: 640px;
   margin: 0 auto;
-  background: linear-gradient(165deg, rgba(255, 253, 248, 0.94) 0%, rgba(250, 245, 235, 0.9) 100%);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: var(--glass);
   -webkit-backdrop-filter: var(--glass);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 22px;
+  border: 1px solid var(--c-border);
+  border-radius: 24px;
   box-shadow:
     var(--lift-hi),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    inset 0 1px 0 #ffffff;
   color: var(--c-text);
   font-family: var(--font-ui);
   font-size: 13px;
@@ -546,7 +546,7 @@ async function submit() {
   padding: 5px 10px;
   border: none;
   border-radius: 7px;
-  background: rgba(120, 104, 78, 0.07);
+  background: var(--c-surface-sunken);
   color: var(--c-text-faint);
   font-family: var(--font-ui);
   font-size: 11px;
@@ -564,7 +564,7 @@ async function submit() {
 
 .sheet__fontbtn--on {
   background: var(--c-text);
-  color: #fffdf9;
+  color: #ffffff;
 }
 
 .steps {
@@ -578,7 +578,7 @@ async function submit() {
   width: 30px;
   height: 2.5px;
   border-radius: 2px;
-  background: rgba(96, 84, 62, 0.16);
+  background: var(--c-border);
   transition: background 0.4s var(--ease);
 }
 
@@ -659,7 +659,7 @@ async function submit() {
   }
 
   &:hover {
-    background: rgba(120, 104, 78, 0.075);
+    background: var(--c-surface-sunken);
   }
 
   &:focus {
@@ -763,7 +763,7 @@ async function submit() {
   gap: 9px;
   padding: 15px 16px;
   border-radius: var(--radius);
-  background: rgba(120, 104, 78, 0.045);
+  background: var(--c-surface-sunken);
   border: 1px solid var(--c-border);
 }
 
@@ -882,7 +882,7 @@ async function submit() {
 .nav__btn--main {
   border: 1px solid transparent;
   background: var(--c-text);
-  color: #fffdf9;
+  color: #ffffff;
 
   &:hover:not(:disabled) {
     background: #000;
@@ -905,7 +905,7 @@ async function submit() {
   color: var(--c-text-muted);
 
   &:hover:not(:disabled) {
-    background: rgba(120, 104, 78, 0.05);
+    background: var(--c-surface-sunken);
     color: var(--c-text);
   }
 
