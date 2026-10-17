@@ -1,0 +1,377 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "世界": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "日期": {
+          "default": "2024-01-01",
+          "type": "string"
+        },
+        "时段": {
+          "default": "上午",
+          "type": "string",
+          "enum": [
+            "清晨",
+            "上午",
+            "午后",
+            "傍晚",
+            "深夜"
+          ]
+        },
+        "世代": {
+          "default": "五代",
+          "type": "string",
+          "enum": [
+            "一代",
+            "二代",
+            "三代",
+            "四代",
+            "五代",
+            "六代"
+          ]
+        },
+        "当前场域": {
+          "default": "生活与私域层",
+          "type": "string",
+          "enum": [
+            "公司与练习室层",
+            "舞台与放送层",
+            "生活与私域层",
+            "商务与活动层",
+            "舆论与粉丝层",
+            "跨国与巡演层",
+            "身体与健康层"
+          ]
+        },
+        "当前场景": {
+          "default": "",
+          "type": "string"
+        },
+        "行业大事": {
+          "default": "",
+          "type": "string"
+        },
+        "事件队列": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "触发日期": {
+                "default": "",
+                "type": "string"
+              },
+              "说明": {
+                "default": "",
+                "type": "string"
+              },
+              "状态": {
+                "default": "待触发",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "时段",
+        "世代",
+        "当前场域"
+      ]
+    },
+    "主角": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "姓名": {
+          "default": "",
+          "type": "string"
+        },
+        "性别": {
+          "default": "",
+          "type": "string"
+        },
+        "出生日期": {
+          "default": "",
+          "type": "string"
+        },
+        "国籍": {
+          "default": "",
+          "type": "string"
+        },
+        "身高体重": {
+          "default": "",
+          "type": "string"
+        },
+        "身高": {
+          "default": "",
+          "type": "string"
+        },
+        "体重": {
+          "default": "",
+          "type": "string"
+        },
+        "体型外貌": {
+          "default": "",
+          "type": "string"
+        },
+        "过往经历": {
+          "default": "",
+          "type": "string"
+        },
+        "当前位置": {
+          "default": "",
+          "type": "string"
+        },
+        "身份": {
+          "default": "",
+          "type": "string"
+        },
+        "所属社": {
+          "default": "",
+          "type": "string"
+        },
+        "出道年": {
+          "default": "",
+          "type": "string"
+        },
+        "事业": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "人气": {
+              "default": 0,
+              "type": "number"
+            },
+            "实力": {
+              "default": 0,
+              "type": "number"
+            },
+            "资源层级": {
+              "default": "素人",
+              "type": "string",
+              "enum": [
+                "素人",
+                "练习生",
+                "新人",
+                "上升期",
+                "一线",
+                "顶流"
+              ]
+            }
+          },
+          "required": [
+            "资源层级"
+          ]
+        }
+      }
+    },
+    "恋爱线": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "default": {},
+        "type": "object",
+        "properties": {
+          "好感度": {
+            "default": 0,
+            "type": "number"
+          },
+          "信任度": {
+            "default": 0,
+            "type": "number"
+          },
+          "隐蔽度": {
+            "default": 0,
+            "type": "number"
+          },
+          "曝光风险": {
+            "default": 0,
+            "type": "number"
+          },
+          "关系阶段": {
+            "default": "陌生",
+            "type": "string",
+            "enum": [
+              "陌生",
+              "相识",
+              "亲近",
+              "暧昧",
+              "恋人",
+              "纠缠"
+            ]
+          }
+        },
+        "required": [
+          "关系阶段"
+        ]
+      }
+    },
+    "舆论": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "热度": {
+          "default": 0,
+          "type": "number"
+        },
+        "风评": {
+          "default": "中立",
+          "type": "string",
+          "enum": [
+            "正向",
+            "中立",
+            "负面",
+            "高危"
+          ]
+        },
+        "危机倒计时": {
+          "default": "",
+          "type": "string"
+        },
+        "当前议题": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "风评"
+      ]
+    },
+    "粉丝": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "规模": {
+          "default": "",
+          "type": "string"
+        },
+        "构成": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "唯粉": {
+              "default": 0,
+              "type": "number"
+            },
+            "团粉": {
+              "default": 0,
+              "type": "number"
+            },
+            "站姐": {
+              "default": 0,
+              "type": "number"
+            },
+            "数据粉": {
+              "default": 0,
+              "type": "number"
+            },
+            "战斗粉": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        },
+        "应援力": {
+          "default": 0,
+          "type": "number"
+        }
+      }
+    },
+    "成绩": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "音源": {
+          "default": "",
+          "type": "string"
+        },
+        "销量": {
+          "default": "",
+          "type": "string"
+        },
+        "一位": {
+          "default": 0,
+          "type": "number"
+        },
+        "直拍": {
+          "default": "",
+          "type": "string"
+        },
+        "品牌评价": {
+          "default": "",
+          "type": "string"
+        }
+      }
+    },
+    "关系网": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "default": {},
+        "type": "object",
+        "properties": {
+          "立场": {
+            "default": "中立",
+            "type": "string",
+            "enum": [
+              "支持",
+              "中立",
+              "敌意"
+            ]
+          },
+          "张力": {
+            "default": 0,
+            "type": "number"
+          }
+        },
+        "required": [
+          "立场"
+        ]
+      }
+    },
+    "身体": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "状态": {
+          "default": "良好",
+          "type": "string",
+          "enum": [
+            "良好",
+            "疲惫",
+            "透支",
+            "伤病"
+          ]
+        },
+        "疲劳": {
+          "default": 0,
+          "type": "number"
+        },
+        "伤病": {
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "状态"
+      ]
+    }
+  }
+}

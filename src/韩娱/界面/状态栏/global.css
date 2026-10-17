@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* 底色：后台待机室的暗，不是纯黑 */
+  --c-surface: #14161c;
+  --c-surface-raised: #1c1f28;
+  --c-surface-sunken: #0e1014;
+
+  /* 文字 */
+  --c-text: #e8eaef;
+  --c-text-muted: #8b91a1;
+  --c-text-faint: #5d6373;
+
+  /* 线 */
+  --c-border: #2a2f3c;
+  --c-border-strong: #3b4252;
+
+  /* 强调：打歌舞台的荧光绿 */
+  --c-primary: #4ade80;
+  --c-primary-dim: #1f6b3d;
+
+  /* 次强调：应援棒的品红 */
+  --c-accent: #f472b6;
+  --c-accent-dim: #7a2f56;
+
+  /* 语义 */
+  --c-danger: #f87171;
+  --c-warning: #fbbf24;
+  --c-success: #4ade80;
+  --c-info: #60a5fa;
+
+  --font-ui: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Mono', Consolas, monospace;
+
+  --radius: 8px;
+}
+
+body {
+  background: transparent;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 数值条通用 */
+.bar {
+  position: relative;
+  height: 5px;
+  background: var(--c-surface-sunken);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar__fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.45s ease;
+}
+
+.bar__fill--primary {
+  background: var(--c-primary);
+}
+
+.bar__fill--accent {
+  background: var(--c-accent);
+}
+
+.bar__fill--danger {
+  background: var(--c-danger);
+}
+
+.bar__fill--warning {
+  background: var(--c-warning);
+}
+
+.bar__fill--info {
+  background: var(--c-info);
+}
+
+.bar__fill--muted {
+  background: var(--c-text-faint);
+}
