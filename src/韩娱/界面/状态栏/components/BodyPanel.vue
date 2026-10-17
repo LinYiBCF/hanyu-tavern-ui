@@ -17,6 +17,12 @@
       </div>
       <p v-if="store.data.主角.体重原因" class="weight__why">{{ store.data.主角.体重原因 }}</p>
       <p v-else class="weight__why weight__why--empty">秤上的数字每天都在往上走一点</p>
+      <p v-if="store.data.主角.体重 > 0" class="weight__daily">
+        <span class="weight__daily-k">日底盘</span>
+        <span class="weight__daily-v" :class="`weight__daily-v--${base_tone}`">+{{ base_rate }}</span>
+        <span class="weight__daily-kg">kg / 天</span>
+        <span v-if="loop_warning" class="weight__loop">· {{ loop_warning }}</span>
+      </p>
     </div>
 
     <div class="fatigue">
@@ -103,6 +109,31 @@ const fatigue_hint = computed(() => {  const f = store.data.身体.疲劳;
   if (f >= 70) return '再连一个宣传期，接下来就只剩医院和公告';
   if (f >= 40) return '睡不够，但还不会在镜头前露出来';
   return '今天还有余量';
+});
+
+const base_rate = computed(() => {
+  const f = store.data.身体.疲劳;
+  let r = 0.1;
+  if (f >= 71) r = 0.3;
+  else if (f >= 46) r = 0.2;
+  if (store.data.身体.状态 === '透支' || store.data.身体.状态 === '伤病') r += 0.1;
+  return r.toFixed(1);
+});
+
+const base_tone = computed(() => {
+  const f = store.data.身体.疲劳;
+  if (f >= 71) return 'hot';
+  if (f >= 46) return 'warm';
+  return 'calm';
+});
+
+const loop_warning = computed(() => {
+  const f = store.data.身体.疲劳;
+  const rising = store.data.主角.体重趋势 === '升';
+  const bad_public = ['负面', '高危'].includes(store.data.舆论.风评) || store.data.舆论.热度 >= 70;
+  if (rising && bad_public) return '这一圈正在自己转';
+  if (f >= 46) return '越累涨得越快';
+  return '';
 });
 </script>
 
@@ -224,6 +255,47 @@ const fatigue_hint = computed(() => {  const f = store.data.身体.疲劳;
 
 .weight__why--empty {
   color: var(--c-text-faint);
+}
+
+.weight__daily {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+  padding-top: 5px;
+  border-top: 1px solid var(--c-border);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.weight__daily-k {
+  color: var(--c-text-faint);
+}
+
+.weight__daily-v {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.weight__daily-v--calm {
+  color: var(--c-text-muted);
+}
+
+.weight__daily-v--warm {
+  color: var(--c-warning);
+}
+
+.weight__daily-v--hot {
+  color: var(--c-danger);
+}
+
+.weight__daily-kg {
+  color: var(--c-text-faint);
+}
+
+.weight__loop {
+  color: var(--c-warning);
 }
 
 .fatigue__head {
