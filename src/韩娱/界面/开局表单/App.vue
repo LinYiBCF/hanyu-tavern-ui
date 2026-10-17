@@ -403,6 +403,11 @@ async function submit() {
   if (submitted.value) {
     return;
   }
+  // 回车在表单里也会触发 submit，前三页先当「下一步」用
+  if (page.value < 2) {
+    next();
+    return;
+  }
   if (!form.姓名) {
     error.value = '至少要填名字';
     page.value = 0;
