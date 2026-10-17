@@ -3,7 +3,10 @@
     <div class="net" :class="`net--${net_tone}`">
       <div class="net__head">
         <span class="net__k">积蓄</span>
-        <span class="net__v">{{ money(store.data.主角.财务.积蓄.数值) }}</span>
+        <span class="net__nums">
+          <span class="net__v">{{ krw(store.data.主角.财务.积蓄.数值) }}</span>
+          <span class="net__cny">≈ {{ cny_of(store.data.主角.财务.积蓄.数值) }}</span>
+        </span>
       </div>
       <p class="net__hint">{{ net_hint }}</p>
     </div>
@@ -11,7 +14,10 @@
     <section class="flow">
       <div class="flow__row">
         <span class="flow__k">收入</span>
-        <span class="flow__v flow__v--in">{{ money(store.data.主角.财务.收入.数值) }}</span>
+        <span class="flow__nums">
+          <span class="flow__v flow__v--in">{{ krw(store.data.主角.财务.收入.数值) }}</span>
+          <span class="flow__cny">≈ {{ cny_of(store.data.主角.财务.收入.数值) }}</span>
+        </span>
         <span class="flow__cycle">/ {{ store.data.主角.财务.收入.周期 }}</span>
       </div>
       <p v-if="store.data.主角.财务.收入.备注" class="flow__note">{{ store.data.主角.财务.收入.备注 }}</p>
@@ -21,7 +27,10 @@
     <section class="flow">
       <div class="flow__row">
         <span class="flow__k">支出</span>
-        <span class="flow__v flow__v--out">{{ money(store.data.主角.财务.支出.数值) }}</span>
+        <span class="flow__nums">
+          <span class="flow__v flow__v--out">{{ krw(store.data.主角.财务.支出.数值) }}</span>
+          <span class="flow__cny">≈ {{ cny_of(store.data.主角.财务.支出.数值) }}</span>
+        </span>
         <span class="flow__cycle">/ {{ store.data.主角.财务.支出.周期 }}</span>
       </div>
       <p v-if="store.data.主角.财务.支出.备注" class="flow__note">{{ store.data.主角.财务.支出.备注 }}</p>
@@ -38,15 +47,10 @@
 </template>
 
 <script setup lang="ts">
+import { cny_of, krw } from '../../currency';
 import { useDataStore } from '../../store';
 
 const store = useDataStore();
-
-function money(v: number) {
-  const n = Math.round(v);
-  const sign = n < 0 ? '-' : '';
-  return `${sign}${Math.abs(n).toLocaleString('zh-CN')}`;
-}
 
 /** 按周期把收支折成月口径，只为给一句判断，不写回变量 */
 function to_month(v: number, cycle: string) {
@@ -124,10 +128,22 @@ const guard_hint = computed(() => {
   color: var(--c-text-faint);
 }
 
+.net__nums {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
 .net__v {
   font-family: var(--font-mono);
   font-size: 1.05rem;
   font-weight: 700;
+}
+
+.net__cny {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  opacity: 0.62;
 }
 
 .net__hint {
@@ -153,12 +169,19 @@ const guard_hint = computed(() => {
 .flow__k {
   font-size: 0.72rem;
   color: var(--c-text-muted);
+  flex-shrink: 0;
+}
+
+.flow__nums {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-left: auto;
 }
 
 .flow__v {
   font-family: var(--font-mono);
   font-size: 0.88rem;
-  margin-left: auto;
 }
 
 .flow__v--in {
@@ -169,9 +192,16 @@ const guard_hint = computed(() => {
   color: var(--c-accent);
 }
 
+.flow__cny {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  color: var(--c-text-faint);
+}
+
 .flow__cycle {
   font-size: 0.7rem;
   color: var(--c-text-faint);
+  flex-shrink: 0;
 }
 
 .flow__note {

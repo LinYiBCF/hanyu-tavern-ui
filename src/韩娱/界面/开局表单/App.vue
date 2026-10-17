@@ -85,12 +85,13 @@
 
       <section class="group">
         <h3 class="group__h">财务状况</h3>
-        <p class="group__desc">三栏都可以留空。数值允许为负，负债直接写负数。</p>
+        <p class="group__desc">三栏都可以留空。以韩元记账，允许为负，负债直接写负数。</p>
 
         <div class="money">
           <div class="money__head">
             <span class="money__k">收入</span>
             <div class="money__ctrl">
+              <span class="money__unit">₩</span>
               <input
                 v-model="form.收入数值"
                 class="field__input money__num"
@@ -105,6 +106,7 @@
               </select>
             </div>
           </div>
+          <p v-if="cny_preview(form.收入数值)" class="money__cny">{{ cny_preview(form.收入数值) }}</p>
           <input
             v-model.trim="form.收入备注"
             class="field__input money__note"
@@ -117,6 +119,7 @@
           <div class="money__head">
             <span class="money__k">支出</span>
             <div class="money__ctrl">
+              <span class="money__unit">₩</span>
               <input
                 v-model="form.支出数值"
                 class="field__input money__num"
@@ -131,6 +134,7 @@
               </select>
             </div>
           </div>
+          <p v-if="cny_preview(form.支出数值)" class="money__cny">{{ cny_preview(form.支出数值) }}</p>
           <input
             v-model.trim="form.支出备注"
             class="field__input money__note"
@@ -143,6 +147,7 @@
           <div class="money__head">
             <span class="money__k">积蓄</span>
             <div class="money__ctrl">
+              <span class="money__unit">₩</span>
               <input
                 v-model="form.积蓄数值"
                 class="field__input money__num"
@@ -152,6 +157,7 @@
               />
             </div>
           </div>
+          <p v-if="cny_preview(form.积蓄数值)" class="money__cny">{{ cny_preview(form.积蓄数值) }}</p>
           <input
             v-model.trim="form.积蓄备注"
             class="field__input money__note"
@@ -171,6 +177,7 @@
 </template>
 
 <script setup lang="ts">
+import { cny_of, krw } from '../currency';
 import { useDataStore } from '../store';
 
 const store = useDataStore();
@@ -236,6 +243,13 @@ function to_int(raw: string) {
   return Number.isFinite(n) ? Math.round(n) : null;
 }
 
+/** 输入框下面的实时旁注，空着的时候不占位 */
+function cny_preview(raw: string) {
+  const n = to_int(raw);
+  if (n === null || n === 0) return '';
+  return `≈ ${cny_of(n)}`;
+}
+
 function has_money() {
   return to_int(form.收入数值) !== null || to_int(form.支出数值) !== null || to_int(form.积蓄数值) !== null;
 }
@@ -243,9 +257,10 @@ function has_money() {
 function money_line(label: string, value: string, cycle?: string, note?: string) {
   const n = to_int(value);
   if (n === null) return null;
-  const head = `${label} ${n.toLocaleString('zh-CN')}`.replace('-', '-');
-  const with_cycle = cycle ? `${head}（${cycle}）` : head;
-  return note ? `${with_cycle}，${note}` : with_cycle;
+  const head = `${label} ${krw(n)}`;
+  const with_cycle = cycle ? `${head}（按${cycle}）` : head;
+  const with_rate = `${with_cycle}，约合 ${cny_of(n)}`;
+  return note ? `${with_rate}，备注：${note}` : with_rate;
 }
 
 function build_identity_desc() {
@@ -464,8 +479,16 @@ async function submit() {
 
 .money__ctrl {
   display: flex;
+  align-items: center;
   gap: 6px;
   min-width: 0;
+}
+
+.money__unit {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--c-text-faint);
+  flex-shrink: 0;
 }
 
 .money__num {
@@ -476,6 +499,14 @@ async function submit() {
 
 .money__cycle {
   width: 76px;
+}
+
+.money__cny {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--c-text-faint);
+  text-align: right;
+  min-height: 0;
 }
 
 .money__note {
