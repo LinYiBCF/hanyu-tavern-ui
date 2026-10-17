@@ -4,43 +4,49 @@
   padding: 0;
 }
 
-/* ═══ 令牌：纯白基调 / 性冷淡 / iPadOS 18 ═══ */
+/* ═══ 令牌：稍深白基底 / iPadOS 18 Split View / 性冷淡 ═══ */
 :root {
-  /* 底：纯白。参考示例的核心是白，不是米色 */
-  --c-base: #ffffff;
-  --c-base-deep: #f5f5f7;
+  /* 基底：比纯白稍深一档，让白色板块能浮起来 */
+  --c-base: #eceef2;
+  --c-base-deep: #e3e5ea;
 
-  /* 面板 */
-  --c-shell: #ffffff;
-  --c-panel-solid: #ffffff;
-  --c-bar: #fafafc;
-  --c-rail: #f8f9fa;
-  --c-sunken: #f5f5f7;
+  /* 面板与板块 */
+  --c-shell: #eceef2;
+  --c-panel: #ffffff;
+  --c-cell: #f7f8fa;
+  --c-card: #fafbfc;
+  /* 别名：面板内沿用旧名，取值与上面一致 */
+  --c-sunken: #f7f8fa;
+  --c-bar: #fafbfc;
+  --c-rail: #f7f8fa;
 
   /* 玻璃 */
-  --c-glass: rgba(255, 255, 255, 0.85);
-  --c-glass-edge: #e5e5ea;
+  --c-glass: rgba(255, 255, 255, 0.78);
+  --c-glass-edge: #e2e4e9;
 
   /* 字：苹果三档灰阶 */
   --c-text: #1d1d1f;
   --c-text-muted: #6e6e73;
   --c-text-faint: #8e8e93;
+  --c-text-body: #3a3a3c;
 
   /* 线 */
-  --c-border: #e5e5ea;
-  --c-border-strong: #d1d1d6;
+  --c-border: #e5e7eb;
+  --c-divider: #eff0f2;
 
   /* 强调 */
   --c-accent: #1d1d1f;
-  --c-accent-dim: rgba(29, 29, 31, 0.06);
   --c-primary: #0071e3;
   --c-primary-dim: #ebf3ff;
 
   /* 语义 */
-  --c-danger: #e11d48;
-  --c-warning: #f97316;
-  --c-success: #16a34a;
-  --c-info: #0071e3;
+  --c-danger: #ff3b30;
+  --c-danger-dim: #fff1f0;
+  --c-warning: #ff9500;
+  --c-warning-dim: #fff7ed;
+  --c-success: #34a853;
+  --c-success-dim: #eefaf0;
+  --c-info: #4285f4;
   --c-ok: #34c759;
 
   /* 字族 */
@@ -48,13 +54,13 @@
     'PingFang SC', 'Apple SD Gothic Neo', 'Microsoft YaHei', sans-serif;
   --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Consolas', 'PingFang SC', monospace;
 
-  --radius: 16px;
+  --radius: 20px;
   --radius-sm: 12px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --glass: blur(20px) saturate(180%);
-  --lift: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
-  --lift-hi: 0 8px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --lift: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --lift-hi: 0 10px 36px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 body {
@@ -88,7 +94,7 @@ body {
 .bar {
   position: relative;
   height: 6px;
-  background: var(--c-border);
+  background: #e5e7eb;
   border-radius: 3px;
   overflow: hidden;
 }
@@ -96,7 +102,7 @@ body {
 .bar__fill {
   height: 100%;
   border-radius: 3px;
-  transition: width 0.5s var(--ease);
+  transition: width 0.6s var(--ease);
 }
 
 .bar__fill--primary {

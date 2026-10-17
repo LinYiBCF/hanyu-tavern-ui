@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <!-- 身份：Bento 方格 -->
+    <!-- 身份四格 -->
     <div class="bento">
       <div class="cell">
         <span class="cell__k">国籍</span>
@@ -20,32 +20,70 @@
       </div>
     </div>
 
-    <!-- 资源等级卡 -->
-    <div class="rank">
-      <div class="rank__tag">RESOURCE LEVEL</div>
-      <div class="rank__title">{{ store.data.主角.事业.资源层级 }}</div>
-      <div class="rank__sub">{{ tier_note }}</div>
-    </div>
-
-    <!-- 人气与实力 -->
+    <!-- 人气与实力两条 -->
     <div class="metrics">
       <div class="metric">
-        <div class="metric__meta">
-          <span class="metric__k">人气 (Popularity)</span>
-          <strong class="metric__v">{{ store.data.主角.事业.人气 }} / 100</strong>
+        <div class="metric__head">
+          <span class="metric__k">综合人气指数</span>
+          <span class="metric__badge">{{ pop_delta }}</span>
+        </div>
+        <div class="metric__body">
+          <strong class="metric__n">{{ pop_text }}</strong>
+          <span class="metric__u">/ 100</span>
         </div>
         <div class="track">
-          <div class="track__fill" :style="{ width: pct(store.data.主角.事业.人气) }"></div>
+          <div class="track__fill track__fill--green" :style="{ width: pct(store.data.主角.事业.人气) }"></div>
         </div>
+        <div class="metric__foot">{{ pop_hint }}</div>
       </div>
 
       <div class="metric">
-        <div class="metric__meta">
-          <span class="metric__k">实力 (Vocal &amp; Dance)</span>
-          <strong class="metric__v">{{ store.data.主角.事业.实力 }} / 100</strong>
+        <div class="metric__head">
+          <span class="metric__k">实测实力评级</span>
+          <span class="metric__badge metric__badge--blue">{{ skill_grade }}</span>
+        </div>
+        <div class="metric__body">
+          <strong class="metric__n">{{ store.data.主角.事业.实力 }}</strong>
+          <span class="metric__u">/ 100</span>
         </div>
         <div class="track">
-          <div class="track__fill track__fill--light" :style="{ width: pct(store.data.主角.事业.实力) }"></div>
+          <div class="track__fill track__fill--blue" :style="{ width: pct(store.data.主角.事业.实力) }"></div>
+        </div>
+        <div class="metric__foot">{{ skill_hint }}</div>
+      </div>
+    </div>
+
+    <!-- 资源层级分布 -->
+    <div class="card">
+      <div class="card__tag">RESOURCE TIER</div>
+      <div class="card__title">{{ store.data.主角.事业.资源层级 }}</div>
+      <div class="card__sub">{{ tier_note }}</div>
+      <div class="bars">
+        <div v-for="b in resource_bars" :key="b.label" class="bars__row">
+          <span class="bars__k">{{ b.label }}</span>
+          <div class="bars__track">
+            <div class="bars__fill" :style="{ width: b.value + '%' }"></div>
+          </div>
+          <span class="bars__v">{{ b.state }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 个人属性与认知 -->
+    <div class="card card--plain">
+      <div class="card__tag">PROFILE</div>
+      <div class="attrs">
+        <div class="attrs__row">
+          <span class="attrs__k">身份定位</span>
+          <span class="attrs__v">{{ store.data.主角.身份 || '尚未确定' }}</span>
+        </div>
+        <div class="attrs__row">
+          <span class="attrs__k">所属社</span>
+          <span class="attrs__v">{{ store.data.主角.所属社 || '无所属' }}</span>
+        </div>
+        <div class="attrs__row">
+          <span class="attrs__k">公众形象</span>
+          <span class="attrs__v">{{ store.data.舆论.风评 || '中立' }}</span>
         </div>
       </div>
     </div>
@@ -95,6 +133,84 @@ const has_bio = computed(
     Boolean(store.data.主角.当前位置),
 );
 
+const pop_text = computed(() => store.data.主角.事业.人气.toFixed(1));
+
+const pop_delta = computed(() => {
+  const v = store.data.主角.事业.人气;
+  if (v === 0) return '未入列';
+  if (v >= 85) return 'S 级关注';
+  if (v >= 65) return 'A 级关注';
+  if (v >= 40) return 'B 级关注';
+  if (v >= 20) return 'C 级关注';
+  return '低位';
+});
+
+const pop_hint = computed(() => {
+  const v = store.data.主角.事业.人气;
+  if (v === 0) return '还没有人替你转发';
+  if (v < 20) return '认识你的人集中在同一个论坛里';
+  if (v < 40) return '已有固定的一批人，还撑不起场面';
+  if (v < 65) return '名字开始离开粉圈往外传';
+  if (v < 85) return '代言方会主动来问档期';
+  return '你说一句话，隔天全行业都在讨论';
+});
+
+const skill_grade = computed(() => {
+  const v = store.data.主角.事业.实力;
+  if (v === 0) return 'UNRATED';
+  if (v >= 90) return 'ACE';
+  if (v >= 75) return 'A';
+  if (v >= 55) return 'B';
+  if (v >= 35) return 'C';
+  return 'D';
+});
+
+const skill_hint = computed(() => {
+  const v = store.data.主角.事业.实力;
+  if (v === 0) return '没有可参照的现场记录';
+  if (v < 35) return '还在练，还上不了大台';
+  if (v < 55) return '上台能完成，但没人会为这一段单独鼓掌';
+  if (v < 75) return '能扛住一段副歌，再多就会露';
+  if (v < 90) return '现场与录音差别不大，公司敢给你麦';
+  return '开麦就是卖点，别人会拿你的舞台当标准';
+});
+
+/** 资源四路的粗分档，只看层级与舆论，不做精确测算 */
+const resource_bars = computed(() => {
+  const tier = store.data.主角.事业.资源层级;
+  const heat = store.data.主角.事业.人气;
+  const favor = store.data.舆论.风评;
+  const tier_base: Record<string, number> = {
+    素人: 4,
+    练习生: 10,
+    新人: 28,
+    上升期: 48,
+    一线: 72,
+    顶流: 92,
+  };
+  const base = tier_base[tier] ?? 4;
+  const adjust = (delta: number) => Math.max(0, Math.min(100, Math.round(base + delta)));
+
+  const state_of = (v: number) => {
+    if (v >= 75) return '领先';
+    if (v >= 45) return '在列';
+    if (v >= 20) return '接触中';
+    return '未启动';
+  };
+
+  const brand = adjust(heat >= 60 ? 10 : heat >= 30 ? 0 : -8);
+  const acting = adjust(tier === '一线' || tier === '顶流' ? 4 : -18);
+  const show = adjust(favor === '正面' ? 8 : favor === '负面' || favor === '高危' ? -14 : 0);
+  const cover = adjust(heat >= 80 ? 8 : -6);
+
+  return [
+    { label: '奢牌代言', value: brand, state: state_of(brand) },
+    { label: '影视资源', value: acting, state: state_of(acting) },
+    { label: '综艺常驻', value: show, state: state_of(show) },
+    { label: '时尚封面', value: cover, state: state_of(cover) },
+  ];
+});
+
 /** 层级说明书，只用一句话，不评价 */
 const tier_note = computed(() => {
   switch (store.data.主角.事业.资源层级) {
@@ -120,21 +236,22 @@ const tier_note = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  padding-bottom: 4px;
 }
 
-/* ── Bento 方格 ── */
+/* ── 身份四格 ── */
 .bento {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .cell {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   padding: 8px 12px;
   border-radius: 12px;
   background: var(--c-sunken);
@@ -144,13 +261,14 @@ const tier_note = computed(() => {
   font-size: 12px;
   font-weight: 400;
   color: var(--c-text-faint);
-  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .cell__v {
   font-size: 12px;
   font-weight: 600;
   color: var(--c-text);
+  text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -159,40 +277,9 @@ const tier_note = computed(() => {
 .cell__v--num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 11.5px;
 }
 
-/* ── 资源等级卡 ── */
-.rank {
-  padding: 16px;
-  border: 1px solid var(--c-border);
-  border-radius: 16px;
-  background: var(--c-bar);
-}
-
-.rank__tag {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--c-text-faint);
-}
-
-.rank__title {
-  margin: 4px 0 2px;
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  line-height: 1.15;
-  color: var(--c-text);
-}
-
-.rank__sub {
-  font-size: 11.5px;
-  color: var(--c-text-muted);
-  line-height: 1.5;
-}
-
-/* ── 指标 ── */
+/* ── 人气 / 实力 ── */
 .metrics {
   display: flex;
   flex-direction: column;
@@ -202,53 +289,214 @@ const tier_note = computed(() => {
 .metric {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  padding: 13px 15px;
+  border-radius: 14px;
+  background: var(--c-card);
+  border: 1px solid var(--c-divider);
 }
 
-.metric__meta {
+.metric__head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
 }
 
 .metric__k {
   font-size: 11.5px;
+  font-weight: 500;
   color: var(--c-text-muted);
 }
 
-.metric__v {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
+.metric__badge {
+  font-size: 10px;
   font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eefaf2;
+  color: var(--c-success);
+  white-space: nowrap;
+}
+
+.metric__badge--blue {
+  background: var(--c-primary-dim);
+  color: var(--c-primary);
+}
+
+.metric__body {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.metric__n {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
   color: var(--c-text);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.metric__u {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--c-text-faint);
+}
+
+.metric__foot {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--c-text-faint);
 }
 
 .track {
   height: 6px;
   border-radius: 3px;
-  background: var(--c-border);
+  background: #e5e7eb;
   overflow: hidden;
 }
 
 .track__fill {
   height: 100%;
   border-radius: 3px;
+  transition: width 0.5s var(--ease);
+}
+
+.track__fill--green {
+  background: var(--c-ok);
+}
+
+.track__fill--blue {
+  background: var(--c-primary);
+}
+
+/* ── 卡片 ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 15px;
+  border-radius: 14px;
+  background: var(--c-card);
+  border: 1px solid var(--c-divider);
+}
+
+.card--plain {
+  gap: 9px;
+}
+
+.card__tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--c-text-faint);
+}
+
+.card__title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--c-text);
+  margin-top: 3px;
+  line-height: 1.2;
+}
+
+.card__sub {
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.bars__row {
+  display: grid;
+  grid-template-columns: 66px 1fr 40px;
+  align-items: center;
+  gap: 9px;
+}
+
+.bars__k {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+}
+
+.bars__track {
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.bars__fill {
+  height: 100%;
+  border-radius: 2px;
   background: var(--c-text);
   transition: width 0.5s var(--ease);
 }
 
-.track__fill--light {
-  background: var(--c-text-faint);
+.bars__v {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--c-text-faint);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ── 属性 ── */
+.attrs {
+  display: flex;
+  flex-direction: column;
+}
+
+.attrs__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--c-divider);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 2px;
+  }
+}
+
+.attrs__k {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--c-text-faint);
+  white-space: nowrap;
+}
+
+.attrs__v {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text);
+  text-align: right;
 }
 
 /* ── 文本卡 ── */
 .bio {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
   padding: 12px 14px;
   border-radius: 14px;
   background: var(--c-sunken);
@@ -257,7 +505,7 @@ const tier_note = computed(() => {
 .bio__row {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .bio__k {
@@ -267,9 +515,10 @@ const tier_note = computed(() => {
 }
 
 .bio__v {
+  margin: 0;
   font-size: 12px;
-  line-height: 1.5;
-  color: #3a3a3c;
-  white-space: pre-wrap;
+  font-weight: 400;
+  line-height: 1.62;
+  color: var(--c-text-body);
 }
 </style>
