@@ -81,7 +81,10 @@
         <!-- 右侧内容 -->
         <main class="ap-content">
           <div class="ap-content__head">
-            <h2 class="ap-content__title">{{ panel_title }}</h2>
+            <div class="ap-content__lead">
+              <h2 class="ap-content__title">{{ panel_title }}</h2>
+              <span class="ap-content__sub">{{ panel_sub }}</span>
+            </div>
             <span v-if="active_tab === '主角'" class="ap-tier">{{ tier_badge }}</span>
           </div>
 
@@ -167,7 +170,26 @@ const rail_open = useLocalStorage<boolean>('韩娱状态栏:rail_open', true);
 const font_style = useLocalStorage<string>('韩娱状态栏:font', 'system');
 
 const active_meta = computed(() => tabs.find((t) => t.id === active_tab.value) ?? tabs[0]);
-const panel_title = computed(() => `${active_meta.value.id} · ${active_meta.value.sub}`);
+
+/** 标题：主角页用本人姓名；姓名未填时才退回「主角」 */
+const hero_name = computed(() => {
+  const name = String(store.data.主角.姓名 || '').trim();
+  return name || '主角';
+});
+
+const panel_title = computed(() => {
+  if (active_tab.value === '主角') return hero_name.value;
+  return `${active_meta.value.id} · ${active_meta.value.sub}`;
+});
+
+/** 标题右侧的一行身份说明，主角页给姓名以外的定位信息 */
+const panel_sub = computed(() => {
+  if (active_tab.value !== '主角') return '';
+  const role = String(store.data.主角.身份 || '').trim();
+  const agency = String(store.data.主角.所属社 || '').trim();
+  if (role && agency) return `${role} · ${agency}`;
+  return role || agency || '身份尚未确定';
+});
 
 const tier_badge = computed(() => {
   const map: Record<string, string> = {
@@ -559,11 +581,34 @@ const mechanic_hint = computed(() => {
   padding: 16px 20px 12px;
 }
 
+.ap-content__lead {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
 .ap-content__title {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ap-content__sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--c-text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .ap-tier {
