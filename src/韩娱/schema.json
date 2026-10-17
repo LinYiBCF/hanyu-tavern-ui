@@ -119,6 +119,19 @@
           "type": "string"
         },
         "体重": {
+          "default": 0,
+          "type": "number"
+        },
+        "体重趋势": {
+          "default": "平",
+          "type": "string",
+          "enum": [
+            "升",
+            "降",
+            "平"
+          ]
+        },
+        "体重原因": {
           "default": "",
           "type": "string"
         },
@@ -247,7 +260,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "体重趋势"
+      ]
     },
     "恋爱线": {
       "default": {},

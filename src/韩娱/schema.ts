@@ -41,7 +41,12 @@ export const Schema = z.object({
       国籍: z.string().prefault(''),
       身高体重: z.string().prefault(''),
       身高: z.string().prefault(''),
-      体重: z.string().prefault(''),
+      体重: z.coerce
+        .number()
+        .transform((v) => Math.max(0, Math.round(v * 10) / 10))
+        .prefault(0),
+      体重趋势: z.enum(['升', '降', '平']).catch('平'),
+      体重原因: z.string().prefault(''),
       体型外貌: z.string().prefault(''),
       过往经历: z.string().prefault(''),
       当前位置: z.string().prefault(''),

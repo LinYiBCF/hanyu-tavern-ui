@@ -429,7 +429,9 @@ async function submit() {
   hero.国籍 = form.国籍;
   hero.身高体重 = hw_text.value;
   hero.身高 = form.身高;
-  hero.体重 = form.体重;
+  hero.体重 = Number(form.体重) || 0;
+  hero.体重趋势 = '平';
+  hero.体重原因 = '';
   hero.体型外貌 = form.体型外貌;
   hero.过往经历 = form.过往经历;
   hero.当前位置 = form.当前位置;

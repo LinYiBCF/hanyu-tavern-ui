@@ -5,6 +5,20 @@
       <span class="state__sub">{{ state_hint }}</span>
     </div>
 
+    <div class="weight" :class="`weight--${trend_tone}`">
+      <div class="weight__head">
+        <span class="weight__k">体重</span>
+        <span class="weight__v">
+          <span v-if="store.data.主角.体重 > 0" class="weight__num">{{ weight_text }}</span>
+          <span v-else class="weight__num weight__num--empty">未填</span>
+          <span v-if="store.data.主角.体重 > 0 && store.data.主角.体重趋势 === '升'" class="tri tri--up">▲</span>
+          <span v-if="store.data.主角.体重 > 0 && store.data.主角.体重趋势 === '降'" class="tri tri--down">▼</span>
+        </span>
+      </div>
+      <p v-if="store.data.主角.体重原因" class="weight__why">{{ store.data.主角.体重原因 }}</p>
+      <p v-else class="weight__why weight__why--empty">秤上的数字每天都在往上走一点</p>
+    </div>
+
     <div class="fatigue">
       <div class="fatigue__head">
         <span class="fatigue__k">疲劳</span>
@@ -60,6 +74,23 @@ const state_hint = computed(() => {
   }
 });
 
+const weight_text = computed(() => {
+  const w = store.data.主角.体重;
+  if (!w) return '';
+  return `${w.toFixed(1)} kg`;
+});
+
+const trend_tone = computed(() => {
+  switch (store.data.主角.体重趋势) {
+    case '升':
+      return 'up';
+    case '降':
+      return 'down';
+    default:
+      return 'flat';
+  }
+});
+
 const fatigue_class = computed(() => {
   const f = store.data.身体.疲劳;
   if (f >= 70) return 'bar__fill--danger';
@@ -67,8 +98,7 @@ const fatigue_class = computed(() => {
   return 'bar__fill--primary';
 });
 
-const fatigue_hint = computed(() => {
-  const f = store.data.身体.疲劳;
+const fatigue_hint = computed(() => {  const f = store.data.身体.疲劳;
   if (f >= 85) return '彩排会比正式演出更容易出事';
   if (f >= 70) return '再连一个宣传期，接下来就只剩医院和公告';
   if (f >= 40) return '睡不够，但还不会在镜头前露出来';
@@ -123,6 +153,77 @@ const fatigue_hint = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.weight {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 11px;
+  border-radius: var(--radius);
+  border-left: 3px solid var(--c-border);
+  background: var(--c-surface-raised);
+}
+
+.weight--up {
+  border-left-color: var(--c-danger);
+}
+
+.weight--down {
+  border-left-color: var(--c-success);
+}
+
+.weight__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.weight__k {
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+}
+
+.weight__v {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.weight__num {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c-text);
+}
+
+.weight__num--empty {
+  font-weight: 400;
+  color: var(--c-text-faint);
+}
+
+.tri {
+  font-size: 0.72rem;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.tri--up {
+  color: var(--c-danger);
+}
+
+.tri--down {
+  color: var(--c-success);
+}
+
+.weight__why {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+.weight__why--empty {
+  color: var(--c-text-faint);
 }
 
 .fatigue__head {

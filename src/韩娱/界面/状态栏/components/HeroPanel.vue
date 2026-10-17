@@ -70,10 +70,14 @@ function pct(v: number) {
 }
 
 const height_weight = computed(() => {
+  const h = store.data.主角.身高;
+  const w = store.data.主角.体重;
+  if (h && w) return `${h}cm / ${w.toFixed(1)}kg`;
   const raw = store.data.主角.身高体重;
   if (raw) return raw;
-  const parts = [store.data.主角.身高, store.data.主角.体重].filter(Boolean);
-  return parts.length ? parts.join(' / ') : '未填';
+  if (h) return `${h}cm`;
+  if (w) return `${w.toFixed(1)}kg`;
+  return '未填';
 });
 </script>
 
