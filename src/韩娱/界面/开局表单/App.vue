@@ -66,6 +66,101 @@
         ></textarea>
       </div>
 
+      <section class="group">
+        <h3 class="group__h">当前时间</h3>
+        <div class="row2">
+          <div class="field">
+            <label class="field__label" for="f-date">日期</label>
+            <input id="f-date" v-model="form.日期" class="field__input" type="date" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="f-hour">几点</label>
+            <select id="f-hour" v-model.number="form.小时" class="field__input">
+              <option v-for="h in hours" :key="h" :value="h">{{ pad(h) }}:00</option>
+            </select>
+          </div>
+        </div>
+        <p class="group__note">只填到小时。时段会自动按 {{ derived_slot }} 记。</p>
+      </section>
+
+      <section class="group">
+        <h3 class="group__h">财务状况</h3>
+        <p class="group__desc">三栏都可以留空。数值允许为负，负债直接写负数。</p>
+
+        <div class="money">
+          <div class="money__head">
+            <span class="money__k">收入</span>
+            <div class="money__ctrl">
+              <input
+                v-model="form.收入数值"
+                class="field__input money__num"
+                type="number"
+                step="1"
+                placeholder="0"
+              />
+              <select v-model="form.收入周期" class="field__input money__cycle">
+                <option value="月">每月</option>
+                <option value="季">每季</option>
+                <option value="年">每年</option>
+              </select>
+            </div>
+          </div>
+          <input
+            v-model.trim="form.收入备注"
+            class="field__input money__note"
+            type="text"
+            placeholder="这笔钱是什么：工作薪酬 / 结算 / 代言（可留空）"
+          />
+        </div>
+
+        <div class="money">
+          <div class="money__head">
+            <span class="money__k">支出</span>
+            <div class="money__ctrl">
+              <input
+                v-model="form.支出数值"
+                class="field__input money__num"
+                type="number"
+                step="1"
+                placeholder="0"
+              />
+              <select v-model="form.支出周期" class="field__input money__cycle">
+                <option value="月">每月</option>
+                <option value="季">每季</option>
+                <option value="年">每年</option>
+              </select>
+            </div>
+          </div>
+          <input
+            v-model.trim="form.支出备注"
+            class="field__input money__note"
+            type="text"
+            placeholder="这笔钱花在哪：车贷支出 / 宿舍房租（可留空）"
+          />
+        </div>
+
+        <div class="money">
+          <div class="money__head">
+            <span class="money__k">积蓄</span>
+            <div class="money__ctrl">
+              <input
+                v-model="form.积蓄数值"
+                class="field__input money__num"
+                type="number"
+                step="1"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <input
+            v-model.trim="form.积蓄备注"
+            class="field__input money__note"
+            type="text"
+            placeholder="当前处境：家里垫的 / 负债 / 解散结算（可留空）"
+          />
+        </div>
+      </section>
+
       <p v-if="error" class="err">{{ error }}</p>
 
       <button class="submit" type="submit" :disabled="submitted">
@@ -80,6 +175,17 @@ import { useDataStore } from '../store';
 
 const store = useDataStore();
 
+const hours = Array.from({ length: 24 }, (_, i) => i);
+
+function pad(n: number) {
+  return String(n).padStart(2, '0');
+}
+
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 const form = reactive({
   姓名: '',
   性别: '',
@@ -89,10 +195,31 @@ const form = reactive({
   体型外貌: '',
   过往经历: '',
   当前位置: '',
+  日期: today(),
+  小时: 9,
+  收入数值: '',
+  收入周期: '月',
+  收入备注: '',
+  支出数值: '',
+  支出周期: '月',
+  支出备注: '',
+  积蓄数值: '',
+  积蓄备注: '',
 });
 
 const error = ref('');
 const submitted = ref(false);
+
+/** 与变量更新规则里的时段划分保持一致 */
+function slot_of(hour: number) {
+  if (hour >= 5 && hour <= 8) return '清晨';
+  if (hour >= 9 && hour <= 11) return '上午';
+  if (hour >= 12 && hour <= 17) return '午后';
+  if (hour >= 18 && hour <= 20) return '傍晚';
+  return '深夜';
+}
+
+const derived_slot = computed(() => slot_of(form.小时));
 
 /** 「170cm / 52kg」「170/52」都要能拆，拆不出来就只留原文 */
 function split_height_weight(raw: string) {
@@ -101,6 +228,24 @@ function split_height_weight(raw: string) {
     return { 身高: '', 体重: '' };
   }
   return { 身高: nums[0], 体重: nums[1] };
+}
+
+function to_int(raw: string) {
+  if (raw === '' || raw === null || raw === undefined) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? Math.round(n) : null;
+}
+
+function has_money() {
+  return to_int(form.收入数值) !== null || to_int(form.支出数值) !== null || to_int(form.积蓄数值) !== null;
+}
+
+function money_line(label: string, value: string, cycle?: string, note?: string) {
+  const n = to_int(value);
+  if (n === null) return null;
+  const head = `${label} ${n.toLocaleString('zh-CN')}`.replace('-', '-');
+  const with_cycle = cycle ? `${head}（${cycle}）` : head;
+  return note ? `${with_cycle}，${note}` : with_cycle;
 }
 
 function build_identity_desc() {
@@ -113,7 +258,18 @@ function build_identity_desc() {
     `体型外貌：${form.体型外貌 || '未说明'}`,
     `过往经历：${form.过往经历 || '未说明'}`,
     `当前位置：${form.当前位置 || '未说明'}`,
+    `当前时间：${form.日期} ${pad(form.小时)}:00（${derived_slot.value}）`,
   ];
+
+  if (has_money()) {
+    const money = [
+      money_line('收入', form.收入数值, form.收入周期, form.收入备注),
+      money_line('支出', form.支出数值, form.支出周期, form.支出备注),
+      money_line('积蓄', form.积蓄数值, undefined, form.积蓄备注),
+    ].filter(Boolean);
+    lines.push(`财务状况：${money.join('；')}`);
+  }
+
   return ['【我入场了】', ...lines, '', '按我的设置铺开这个世界，不要替我决定我是谁。'].join('\n');
 }
 
@@ -140,6 +296,22 @@ async function submit() {
   hero.体型外貌 = form.体型外貌;
   hero.过往经历 = form.过往经历;
   hero.当前位置 = form.当前位置;
+
+  const finance = hero.财务;
+  finance.收入.数值 = to_int(form.收入数值) ?? 0;
+  finance.收入.周期 = form.收入周期 as '月' | '季' | '年';
+  finance.收入.备注 = form.收入备注;
+  finance.支出.数值 = to_int(form.支出数值) ?? 0;
+  finance.支出.周期 = form.支出周期 as '月' | '季' | '年';
+  finance.支出.备注 = form.支出备注;
+  finance.积蓄.数值 = to_int(form.积蓄数值) ?? 0;
+  finance.积蓄.备注 = form.积蓄备注;
+
+  if (form.日期) {
+    store.data.世界.日期 = form.日期;
+  }
+  store.data.世界.时间 = `${pad(form.小时)}:00`;
+  store.data.世界.时段 = derived_slot.value as '清晨' | '上午' | '午后' | '傍晚' | '深夜';
 
   try {
     await createChatMessages([{ role: 'user', name: form.姓名, message: build_identity_desc() }]);
@@ -238,6 +410,78 @@ async function submit() {
   min-height: 56px;
 }
 
+.group {
+  padding-top: 12px;
+  border-top: 1px dashed var(--c-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.group__h {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--c-primary);
+}
+
+.group__desc {
+  font-size: 0.72rem;
+  color: var(--c-text-faint);
+  line-height: 1.5;
+  margin-top: -4px;
+}
+
+.group__note {
+  font-size: 0.72rem;
+  color: var(--c-text-faint);
+  line-height: 1.5;
+}
+
+.money {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  background: var(--c-surface-sunken);
+}
+
+.money__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.money__k {
+  font-size: 0.74rem;
+  color: var(--c-text-muted);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.money__ctrl {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+
+.money__num {
+  width: 108px;
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.money__cycle {
+  width: 76px;
+}
+
+.money__note {
+  font-size: 0.76rem;
+}
+
 .err {
   font-size: 0.74rem;
   color: var(--c-danger);
@@ -274,6 +518,16 @@ async function submit() {
 @media (max-width: 520px) {
   .row2 {
     grid-template-columns: 1fr;
+  }
+
+  .money__head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .money__num {
+    flex: 1;
+    width: auto;
   }
 }
 </style>

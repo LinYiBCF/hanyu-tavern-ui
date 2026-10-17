@@ -2,6 +2,7 @@ export const Schema = z.object({
   世界: z
     .object({
       日期: z.string().prefault('2024-01-01'),
+      时间: z.string().prefault('09:00'),
       时段: z.enum(['清晨', '上午', '午后', '傍晚', '深夜']).catch('上午'),
       世代: z.enum(['一代', '二代', '三代', '四代', '五代', '六代']).catch('五代'),
       当前场域: z
@@ -52,6 +53,30 @@ export const Schema = z.object({
           人气: z.coerce.number().transform((v) => _.clamp(Math.round(v), 0, 100)).prefault(0),
           实力: z.coerce.number().transform((v) => _.clamp(Math.round(v), 0, 100)).prefault(0),
           资源层级: z.enum(['素人', '练习生', '新人', '上升期', '一线', '顶流']).catch('素人'),
+        })
+        .prefault({}),
+      财务: z
+        .object({
+          收入: z
+            .object({
+              数值: z.coerce.number().transform((v) => Math.round(v)).prefault(0),
+              周期: z.enum(['月', '季', '年']).catch('月'),
+              备注: z.string().prefault(''),
+            })
+            .prefault({}),
+          支出: z
+            .object({
+              数值: z.coerce.number().transform((v) => Math.round(v)).prefault(0),
+              周期: z.enum(['月', '季', '年']).catch('月'),
+              备注: z.string().prefault(''),
+            })
+            .prefault({}),
+          积蓄: z
+            .object({
+              数值: z.coerce.number().transform((v) => Math.round(v)).prefault(0),
+              备注: z.string().prefault(''),
+            })
+            .prefault({}),
         })
         .prefault({}),
     })

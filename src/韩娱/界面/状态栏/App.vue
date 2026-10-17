@@ -9,6 +9,7 @@
       <CareerPanel v-else-if="active_tab === '成绩'" />
       <PublicPanel v-else-if="active_tab === '舆论'" />
       <RelationPanel v-else-if="active_tab === '关系'" />
+      <FinancePanel v-else-if="active_tab === '财务'" />
       <BodyPanel v-else />
     </div>
 
@@ -22,6 +23,7 @@
 import { useDataStore } from '../store';
 import BodyPanel from './components/BodyPanel.vue';
 import CareerPanel from './components/CareerPanel.vue';
+import FinancePanel from './components/FinancePanel.vue';
 import HeaderBar from './components/HeaderBar.vue';
 import HeroPanel from './components/HeroPanel.vue';
 import PublicPanel from './components/PublicPanel.vue';
@@ -35,6 +37,7 @@ const tabs = [
   { id: '成绩', label: '成绩' },
   { id: '舆论', label: '舆论' },
   { id: '关系', label: '关系' },
+  { id: '财务', label: '财务' },
   { id: '身体', label: '身体' },
 ];
 

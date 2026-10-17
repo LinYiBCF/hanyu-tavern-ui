@@ -7,6 +7,7 @@
       </div>
       <div class="head__time">
         <span class="head__date">{{ store.data.世界.日期 }}</span>
+        <span class="head__clock">{{ store.data.世界.时间 }}</span>
         <span class="head__slot">{{ store.data.世界.时段 }}</span>
       </div>
     </div>
@@ -88,6 +89,13 @@ const role_line = computed(() => {
   font-family: var(--font-mono);
   font-size: 0.76rem;
   color: var(--c-primary);
+}
+
+.head__clock {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--c-primary);
+  opacity: 0.82;
 }
 
 .head__slot {
