@@ -11,7 +11,16 @@
       <span class="ap-island__sheen"></span>
       <span class="ap-island__led" :class="`ap-island__led--${dot_tone}`"></span>
       <span class="ap-island__name">{{ name_display }}</span>
-      <span v-if="role_line" class="ap-island__role">{{ role_line }}</span>
+
+      <!-- 展开时胶囊栏中间长出 pill，收起时收回 -->
+      <span class="ap-island__pills" :class="{ 'ap-island__pills--on': is_open }">
+        <span class="ap-pill">{{ store.data.世界.世代 }}</span>
+        <span class="ap-pill">{{ store.data.世界.当前场域 }}</span>
+        <span v-if="store.data.世界.当前场景" class="ap-pill ap-pill--on">{{
+          store.data.世界.当前场景
+        }}</span>
+      </span>
+
       <span class="ap-island__clock">{{ clock_line }}</span>
       <svg class="ap-island__caret" :class="{ 'ap-island__caret--up': is_open }" viewBox="0 0 24 24">
         <path d="M7 10l5 5 5-5" />
@@ -22,24 +31,6 @@
     <div class="ap-stage" :class="{ 'ap-stage--open': is_open }">
       <div class="ap-stage__clip">
         <div class="ap-frame">
-          <!-- 顶部通透胶囊栏 -->
-          <header class="ap-top">
-            <div class="ap-top__left">
-              <span class="ap-top__dot" :class="`ap-top__dot--${dot_tone}`"></span>
-              <span class="ap-top__name">{{ name_display }}</span>
-            </div>
-
-            <div class="ap-top__center">
-              <span class="ap-pill">{{ store.data.世界.世代 }}</span>
-              <span class="ap-pill">{{ store.data.世界.当前场域 }}</span>
-              <span v-if="store.data.世界.当前场景" class="ap-pill ap-pill--on">{{
-                store.data.世界.当前场景
-              }}</span>
-            </div>
-
-            <div class="ap-top__right">{{ clock_line }}</div>
-          </header>
-
           <!-- 主体分栏 -->
           <div class="ap-split">
             <!-- 左侧垂直子菜单 -->
@@ -157,11 +148,6 @@ function toggle() {
 }
 
 const name_display = computed(() => store.data.主角.姓名 || '未命名');
-
-const role_line = computed(() => {
-  const parts = [store.data.主角.身份, store.data.主角.所属社].filter(Boolean);
-  return parts.join(' · ');
-});
 
 const clock_line = computed(() => {
   const d = store.data.世界.日期;
@@ -289,16 +275,26 @@ const mechanic_hint = computed(() => {
   flex-shrink: 0;
 }
 
-.ap-island__role {
+/* 展开时胶囊栏中间长出三项状态，收起时收回 */
+.ap-island__pills {
   position: relative;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--c-text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 10px;
   min-width: 0;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-width 0.5s var(--ease),
+    opacity 0.3s ease,
+    margin-left 0.4s var(--ease);
+}
+
+.ap-island__pills--on {
+  max-width: 60%;
+  opacity: 1;
 }
 
 .ap-island__clock {
@@ -352,7 +348,7 @@ const mechanic_hint = computed(() => {
 /* 4:3 画幅 */
 .ap-frame {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1fr auto;
   width: 100%;
   aspect-ratio: 4 / 3;
   border: 1px solid var(--c-glass-edge);
@@ -365,69 +361,11 @@ const mechanic_hint = computed(() => {
   overflow: hidden;
 }
 
-/* ── 顶部胶囊栏 ── */
-.ap-top {
+/* ── 分栏 ── */
+.ap-split {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 18px;
-  background: var(--c-bar);
-  border-bottom: 0.5px solid #efefef;
-}
-
-.ap-top__left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.ap-top__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.ap-top__dot--ok {
-  background: var(--c-ok);
-  box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
-}
-
-.ap-top__dot--warn {
-  background: var(--c-warning);
-  box-shadow: 0 0 8px rgba(201, 120, 10, 0.45);
-}
-
-.ap-top__dot--bad {
-  background: var(--c-danger);
-  box-shadow: 0 0 8px rgba(224, 52, 43, 0.45);
-}
-
-.ap-top__name {
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: -0.012em;
-  color: var(--c-text);
-  white-space: nowrap;
-}
-
-.ap-top__center {
-  display: flex;
-  gap: 6px;
+  min-height: 0;
   overflow: hidden;
-  min-width: 0;
-}
-
-.ap-top__right {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 550;
-  color: var(--c-text-muted);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .ap-pill {
@@ -446,13 +384,6 @@ const mechanic_hint = computed(() => {
   background: #ebf3ff;
   color: var(--c-primary);
   font-weight: 500;
-}
-
-/* ── 分栏 ── */
-.ap-split {
-  display: flex;
-  min-height: 0;
-  overflow: hidden;
 }
 
 /* 左：图标竖排 */
@@ -622,12 +553,8 @@ const mechanic_hint = computed(() => {
     padding: 14px 14px;
   }
 
-  .ap-top {
-    padding: 10px 13px;
-  }
-
-  .ap-top__center {
-    display: none;
+  .ap-island__pills--on {
+    max-width: 40%;
   }
 
   .ap-font {
