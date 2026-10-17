@@ -1,17 +1,20 @@
 <template>
   <div class="wrap">
+    <!-- 热度：一个数字 + 一条线 + 一个风评胶囊 -->
     <div class="heat">
       <div class="heat__head">
-        <span class="heat__k">热度</span>
-        <span class="heat__v" :class="heat_class">{{ store.data.舆论.热度 }}</span>
+        <span class="heat__n" :class="{ 'heat__n--hot': store.data.舆论.热度 >= 70 }">
+          {{ store.data.舆论.热度 }}
+        </span>
+        <span class="tag" :class="`tag--${rating_tone}`">{{ store.data.舆论.风评 }}</span>
       </div>
-      <div class="bar">
+      <div class="bar heat__bar">
         <div class="bar__fill" :class="heat_bar_class" :style="{ width: pct(store.data.舆论.热度) }"></div>
       </div>
-      <div class="heat__foot">
-        <span class="tag" :class="`tag--${rating_tone}`">{{ store.data.舆论.风评 }}</span>
-        <span v-if="store.data.舆论.危机倒计时" class="crisis">{{ store.data.舆论.危机倒计时 }}</span>
-      </div>
+      <p v-if="store.data.舆论.危机倒计时" class="crisis">
+        <span class="crisis__k">倒计时</span>
+        <span class="crisis__v">{{ store.data.舆论.危机倒计时 }}</span>
+      </p>
     </div>
 
     <section v-if="store.data.舆论.当前议题.length" class="block">
@@ -25,10 +28,7 @@
       <h4 class="block__h">粉丝</h4>
       <div class="fan-head">
         <span class="fan-size">{{ store.data.粉丝.规模 || '尚未成气候' }}</span>
-        <span class="fan-power">
-          应援力
-          <b>{{ store.data.粉丝.应援力 }}</b>
-        </span>
+        <span class="fan-power">{{ store.data.粉丝.应援力 }}</span>
       </div>
       <div class="bar">
         <div class="bar__fill bar__fill--accent" :style="{ width: pct(store.data.粉丝.应援力) }"></div>
@@ -82,13 +82,11 @@ const rating_tone = computed(() => {
   }
 });
 
-const heat_class = computed(() => (store.data.舆论.热度 >= 70 ? 'heat__v--hot' : ''));
-
 const heat_bar_class = computed(() => {
   const h = store.data.舆论.热度;
   if (h >= 70) return 'bar__fill--danger';
   if (h >= 40) return 'bar__fill--warning';
-  return 'bar__fill--primary';
+  return 'bar__fill--accent';
 });
 </script>
 
@@ -96,54 +94,51 @@ const heat_bar_class = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 }
 
 .heat {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .heat__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  gap: 10px;
 }
 
-.heat__k {
-  font-size: 0.72rem;
-  color: var(--c-text-muted);
-}
-
-.heat__v {
+.heat__n {
   font-family: var(--font-mono);
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--c-text);
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
-.heat__v--hot {
+.heat__n--hot {
   color: var(--c-danger);
 }
 
-.heat__foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 3px;
+.heat__bar {
+  margin-top: 4px;
+  height: 2px;
 }
 
 .tag {
-  font-size: 0.68rem;
-  padding: 1px 8px;
+  font-size: 10px;
+  padding: 2px 8px;
   border-radius: 999px;
-  border: 1px solid currentcolor;
+  background: rgba(0, 0, 0, 0.04);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .tag--ok {
-  color: var(--c-success);
+  color: #248a3d;
 }
 
 .tag--mid {
@@ -151,7 +146,7 @@ const heat_bar_class = computed(() => {
 }
 
 .tag--warn {
-  color: var(--c-warning);
+  color: #c96a00;
 }
 
 .tag--bad {
@@ -159,42 +154,60 @@ const heat_bar_class = computed(() => {
 }
 
 .crisis {
-  font-size: 0.7rem;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 59, 48, 0.06);
+}
+
+.crisis__k {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
   color: var(--c-danger);
-  font-family: var(--font-mono);
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+.crisis__v {
+  font-size: 11.5px;
+  color: var(--c-danger);
+  line-height: 1.5;
 }
 
 .block__h {
-  font-size: 0.7rem;
+  font-size: 9.5px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   color: var(--c-text-faint);
-  margin-bottom: 7px;
+  margin-bottom: 9px;
 }
 
 .issues {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 7px;
 }
 
 .issue {
-  font-size: 0.78rem;
+  font-size: 12px;
   color: var(--c-text);
-  padding-left: 11px;
+  padding-left: 12px;
   position: relative;
-  line-height: 1.5;
+  line-height: 1.6;
 
   &::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 0.62em;
-    width: 4px;
-    height: 4px;
+    top: 0.68em;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
-    background: var(--c-warning);
+    background: var(--c-text-faint);
   }
 }
 
@@ -202,52 +215,49 @@ const heat_bar_class = computed(() => {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 5px;
+  gap: 10px;
+  margin-bottom: 7px;
 }
 
 .fan-size {
-  font-size: 0.78rem;
+  font-size: 12.5px;
   color: var(--c-text);
 }
 
 .fan-power {
-  font-size: 0.68rem;
-  color: var(--c-text-muted);
-
-  b {
-    font-family: var(--font-mono);
-    color: var(--c-accent);
-    font-size: 0.8rem;
-  }
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--c-text);
+  font-variant-numeric: tabular-nums;
 }
 
 .comp {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
-  margin-top: 10px;
+  gap: 11px 18px;
+  margin-top: 15px;
 }
 
 .comp__meta {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  margin-bottom: 4px;
 }
 
 .comp__k {
-  font-size: 0.68rem;
+  font-size: 10.5px;
   color: var(--c-text-faint);
 }
 
 .comp__v {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 10.5px;
   color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .comp__bar {
-  margin-top: 2px;
-  height: 3px;
+  height: 2px;
 }
 </style>

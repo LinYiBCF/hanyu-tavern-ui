@@ -1,44 +1,51 @@
 <template>
   <div class="wrap">
+    <!-- 身份：两列发丝线表格，不加框 -->
     <div class="grid2">
       <div class="field">
         <span class="field__k">国籍</span>
-        <span class="field__v">{{ store.data.主角.国籍 || '未填' }}</span>
+        <span class="field__v">{{ store.data.主角.国籍 || '—' }}</span>
       </div>
       <div class="field">
         <span class="field__k">性别</span>
-        <span class="field__v">{{ store.data.主角.性别 || '未填' }}</span>
+        <span class="field__v">{{ store.data.主角.性别 || '—' }}</span>
       </div>
       <div class="field">
         <span class="field__k">出生</span>
-        <span class="field__v">{{ store.data.主角.出生日期 || '未填' }}</span>
+        <span class="field__v field__v--num">{{ store.data.主角.出生日期 || '—' }}</span>
       </div>
       <div class="field">
         <span class="field__k">身高体重</span>
-        <span class="field__v">{{ height_weight }}</span>
+        <span class="field__v field__v--num">{{ height_weight }}</span>
       </div>
     </div>
 
+    <!-- 位置：资源层级做主角，两条细线跟在后面 -->
     <section class="block">
       <h4 class="block__h">位置</h4>
-      <div class="stat">
-        <div class="stat__row">
-          <span class="stat__k">资源层级</span>
-          <span class="stat__v stat__v--hl">{{ store.data.主角.事业.资源层级 }}</span>
-        </div>
-        <div class="stat__row">
-          <span class="stat__k">人气</span>
-          <span class="stat__v">{{ store.data.主角.事业.人气 }}</span>
-        </div>
-        <div class="bar">
-          <div class="bar__fill bar__fill--primary" :style="{ width: pct(store.data.主角.事业.人气) }"></div>
-        </div>
-        <div class="stat__row stat__row--gap">
-          <span class="stat__k">实力</span>
-          <span class="stat__v">{{ store.data.主角.事业.实力 }}</span>
+
+      <div class="tier">
+        <span class="tier__v">{{ store.data.主角.事业.资源层级 }}</span>
+        <span class="tier__sub">{{ tier_note }}</span>
+      </div>
+
+      <div class="meter">
+        <div class="meter__row">
+          <span class="meter__k">人气</span>
+          <span class="meter__v">{{ store.data.主角.事业.人气 }}</span>
         </div>
         <div class="bar">
-          <div class="bar__fill bar__fill--info" :style="{ width: pct(store.data.主角.事业.实力) }"></div>
+          <div class="bar__fill bar__fill--accent" :style="{ width: pct(store.data.主角.事业.人气) }"></div>
+        </div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__row">
+          <span class="meter__k">实力</span>
+          <span class="meter__v">{{ store.data.主角.事业.实力 }}</span>
+        </div>
+        <div class="bar">
+          <div class="bar__fill bar__fill--muted" :style="{ width: pct(store.data.主角.事业.实力) }"></div>
         </div>
       </div>
     </section>
@@ -77,7 +84,27 @@ const height_weight = computed(() => {
   if (raw) return raw;
   if (h) return `${h}cm`;
   if (w) return `${w.toFixed(1)}kg`;
-  return '未填';
+  return '—';
+});
+
+/** 层级说明书，只用一句话，不评价 */
+const tier_note = computed(() => {
+  switch (store.data.主角.事业.资源层级) {
+    case '素人':
+      return '还没进到会被分配资源的名单里';
+    case '练习生':
+      return '公司内部有编号，对外没有名字';
+    case '新人':
+      return '能收到行程，但挑不了行程';
+    case '上升期':
+      return '开始有人来找你，条件还是公司开';
+    case '一线':
+      return '行程要谈，谈的时候你有话可以讲';
+    case '顶流':
+      return '很多事不必谈，会有人先替你想好';
+    default:
+      return '';
+  }
 });
 </script>
 
@@ -85,32 +112,34 @@ const height_weight = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 20px;
 }
 
+/* ── 身份：无框发丝线表格 ── */
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
+  gap: 0 18px;
 }
 
 .field {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
-  padding-bottom: 4px;
-  border-bottom: 1px dashed var(--c-border);
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 0.5px solid var(--c-border);
 }
 
 .field__k {
-  font-size: 0.7rem;
+  font-size: 10.5px;
   color: var(--c-text-faint);
+  letter-spacing: 0.04em;
   flex-shrink: 0;
 }
 
 .field__v {
-  font-size: 0.78rem;
+  font-size: 12.5px;
   color: var(--c-text);
   text-align: right;
   overflow: hidden;
@@ -118,50 +147,77 @@ const height_weight = computed(() => {
   white-space: nowrap;
 }
 
-.block__h {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  color: var(--c-text-faint);
-  margin-bottom: 7px;
+.field__v--num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
-.stat {
+/* ── 区块标题：极小的字，全部大写感，靠字距撑起来 ── */
+.block__h {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--c-text-faint);
+  margin-bottom: 9px;
+}
+
+/* ── 资源层级：整形，一整行给它 ── */
+.tier {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  padding-bottom: 13px;
+  margin-bottom: 13px;
+  border-bottom: 0.5px solid var(--c-border);
 }
 
-.stat__row {
+.tier__v {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.tier__sub {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  line-height: 1.5;
+}
+
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  & + & {
+    margin-top: 12px;
+  }
+}
+
+.meter__row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
 }
 
-.stat__row--gap {
-  margin-top: 6px;
-}
-
-.stat__k {
-  font-size: 0.72rem;
+.meter__k {
+  font-size: 11px;
   color: var(--c-text-muted);
 }
 
-.stat__v {
+.meter__v {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 11.5px;
   color: var(--c-text);
-}
-
-.stat__v--hl {
-  color: var(--c-primary);
-  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .prose {
-  font-size: 0.78rem;
-  line-height: 1.65;
+  font-size: 12px;
+  line-height: 1.75;
   color: var(--c-text-muted);
   white-space: pre-wrap;
+  letter-spacing: 0.01em;
 }
 </style>

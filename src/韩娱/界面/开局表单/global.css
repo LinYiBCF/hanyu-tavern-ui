@@ -5,32 +5,44 @@
 }
 
 :root {
-  --c-surface: #14161c;
-  --c-surface-raised: #1c1f28;
-  --c-surface-sunken: #0e1014;
+  --c-surface: rgba(255, 255, 255, 0.84);
+  --c-surface-raised: rgba(255, 255, 255, 0.96);
+  --c-surface-sunken: rgba(0, 0, 0, 0.028);
 
-  --c-text: #e8eaef;
-  --c-text-muted: #8b91a1;
-  --c-text-faint: #5d6373;
+  --c-text: #1d1d1f;
+  --c-text-muted: #86868b;
+  --c-text-faint: #aeaeb2;
 
-  --c-border: #2a2f3c;
-  --c-border-strong: #3b4252;
+  --c-border: rgba(0, 0, 0, 0.055);
+  --c-border-strong: rgba(0, 0, 0, 0.1);
 
-  --c-primary: #4ade80;
-  --c-primary-dim: #1f6b3d;
-  --c-accent: #f472b6;
+  --c-primary: #0071e3;
+  --c-primary-dim: rgba(0, 113, 227, 0.12);
+  --c-accent: #1d1d1f;
+  --c-accent-dim: rgba(0, 0, 0, 0.14);
 
-  --c-danger: #f87171;
-  --c-warning: #fbbf24;
+  --c-danger: #ff3b30;
+  --c-warning: #ff9500;
+  --c-success: #34c759;
+  --c-info: #5ac8fa;
 
-  --font-ui: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --font-mono: 'SF Mono', 'Cascadia Mono', Consolas, monospace;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue',
+    'Microsoft YaHei', sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Cascadia Mono', Consolas, monospace;
 
-  --radius: 8px;
+  --radius: 14px;
+  --radius-sm: 9px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --glass: blur(20px) saturate(180%);
+  --lift: 0 4px 18px rgba(0, 0, 0, 0.05);
+  --lift-hi: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 body {
   background: transparent;
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--c-text);
 }

@@ -1,41 +1,42 @@
 <template>
   <div class="wrap">
-    <div class="net" :class="`net--${net_tone}`">
+    <!-- 积蓄：整组唯一放大的数字 -->
+    <div class="net">
       <div class="net__head">
         <span class="net__k">积蓄</span>
         <span class="net__nums">
-          <span class="net__v">{{ krw(store.data.主角.财务.积蓄.数值) }}</span>
-          <span class="net__cny">≈ {{ cny_of(store.data.主角.财务.积蓄.数值) }}</span>
+          <span class="net__v" :class="`net__v--${net_tone}`">{{ krw(store.data.主角.财务.积蓄.数值) }}</span>
         </span>
       </div>
+      <p class="net__cny">≈ {{ cny_of(store.data.主角.财务.积蓄.数值) }}</p>
       <p class="net__hint">{{ net_hint }}</p>
     </div>
 
-    <section class="flow">
-      <div class="flow__row">
-        <span class="flow__k">收入</span>
-        <span class="flow__nums">
-          <span class="flow__v flow__v--in">{{ krw(store.data.主角.财务.收入.数值) }}</span>
+    <div class="flows">
+      <div class="flow">
+        <div class="flow__row">
+          <span class="flow__k">收入</span>
+          <span class="flow__v">{{ krw(store.data.主角.财务.收入.数值) }}</span>
+          <span class="flow__cycle">/ {{ store.data.主角.财务.收入.周期 }}</span>
+        </div>
+        <div class="flow__sub">
           <span class="flow__cny">≈ {{ cny_of(store.data.主角.财务.收入.数值) }}</span>
-        </span>
-        <span class="flow__cycle">/ {{ store.data.主角.财务.收入.周期 }}</span>
+          <span class="flow__note">{{ store.data.主角.财务.收入.备注 || '未写来源' }}</span>
+        </div>
       </div>
-      <p v-if="store.data.主角.财务.收入.备注" class="flow__note">{{ store.data.主角.财务.收入.备注 }}</p>
-      <p v-else class="flow__note flow__note--empty">未写来源</p>
-    </section>
 
-    <section class="flow">
-      <div class="flow__row">
-        <span class="flow__k">支出</span>
-        <span class="flow__nums">
-          <span class="flow__v flow__v--out">{{ krw(store.data.主角.财务.支出.数值) }}</span>
+      <div class="flow">
+        <div class="flow__row">
+          <span class="flow__k">支出</span>
+          <span class="flow__v">{{ krw(store.data.主角.财务.支出.数值) }}</span>
+          <span class="flow__cycle">/ {{ store.data.主角.财务.支出.周期 }}</span>
+        </div>
+        <div class="flow__sub">
           <span class="flow__cny">≈ {{ cny_of(store.data.主角.财务.支出.数值) }}</span>
-        </span>
-        <span class="flow__cycle">/ {{ store.data.主角.财务.支出.周期 }}</span>
+          <span class="flow__note">{{ store.data.主角.财务.支出.备注 || '未写去向' }}</span>
+        </div>
       </div>
-      <p v-if="store.data.主角.财务.支出.备注" class="flow__note">{{ store.data.主角.财务.支出.备注 }}</p>
-      <p v-else class="flow__note flow__note--empty">未写去向</p>
-    </section>
+    </div>
 
     <section v-if="store.data.主角.财务.积蓄.备注" class="block">
       <h4 class="block__h">积蓄说明</h4>
@@ -93,26 +94,16 @@ const guard_hint = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 }
 
+/* ── 积蓄：放大数字 + 灰字旁注 ── */
 .net {
-  padding: 9px 11px;
-  border-radius: var(--radius);
-  border-left: 3px solid currentcolor;
-  background: var(--c-surface-raised);
-}
-
-.net--ok {
-  color: var(--c-primary);
-}
-
-.net--warn {
-  color: var(--c-warning);
-}
-
-.net--bad {
-  color: var(--c-danger);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px solid var(--c-border);
 }
 
 .net__head {
@@ -123,119 +114,145 @@ const guard_hint = computed(() => {
 }
 
 .net__k {
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  font-size: 10.5px;
   color: var(--c-text-faint);
+  letter-spacing: 0.04em;
 }
 
 .net__nums {
   display: inline-flex;
   align-items: baseline;
-  gap: 5px;
+  gap: 6px;
 }
 
 .net__v {
   font-family: var(--font-mono);
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.net__v--ok {
+  color: var(--c-text);
+}
+
+.net__v--warn {
+  color: #c96a00;
+}
+
+.net__v--bad {
+  color: var(--c-danger);
 }
 
 .net__cny {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  opacity: 0.62;
+  font-size: 10.5px;
+  color: var(--c-text-faint);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .net__hint {
-  margin-top: 5px;
-  font-size: 0.72rem;
+  margin-top: 4px;
+  font-size: 11.5px;
   color: var(--c-text-muted);
-  line-height: 1.5;
+  line-height: 1.6;
+}
+
+/* ── 收支：两行，用发丝线分 ── */
+.flows {
+  display: flex;
+  flex-direction: column;
 }
 
 .flow {
-  padding: 8px 11px;
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius);
-  background: var(--c-surface-sunken);
+  padding: 11px 0;
+  border-bottom: 0.5px solid var(--c-border);
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
 }
 
 .flow__row {
   display: flex;
   align-items: baseline;
-  gap: 7px;
+  gap: 8px;
 }
 
 .flow__k {
-  font-size: 0.72rem;
+  font-size: 11px;
   color: var(--c-text-muted);
   flex-shrink: 0;
-}
-
-.flow__nums {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 5px;
-  margin-left: auto;
 }
 
 .flow__v {
   font-family: var(--font-mono);
-  font-size: 0.88rem;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
 }
 
-.flow__v--in {
-  color: var(--c-primary);
+.flow__cycle {
+  font-size: 10px;
+  color: var(--c-text-faint);
+  flex-shrink: 0;
+  width: 20px;
+  text-align: left;
 }
 
-.flow__v--out {
-  color: var(--c-accent);
+.flow__sub {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .flow__cny {
   font-family: var(--font-mono);
-  font-size: 0.64rem;
-  color: var(--c-text-faint);
-}
-
-.flow__cycle {
-  font-size: 0.7rem;
+  font-size: 10px;
   color: var(--c-text-faint);
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .flow__note {
-  margin-top: 4px;
-  font-size: 0.73rem;
-  color: var(--c-text-muted);
-  line-height: 1.5;
-}
-
-.flow__note--empty {
+  font-size: 11px;
   color: var(--c-text-faint);
-  font-style: italic;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .block__h {
-  font-size: 0.7rem;
+  font-size: 9.5px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   color: var(--c-text-faint);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .prose {
-  font-size: 0.78rem;
-  line-height: 1.65;
+  font-size: 12px;
+  line-height: 1.75;
   color: var(--c-text-muted);
   white-space: pre-wrap;
 }
 
 .guard {
-  font-size: 0.72rem;
+  font-size: 11px;
   color: var(--c-text-faint);
-  line-height: 1.55;
-  border-top: 1px dashed var(--c-border);
-  padding-top: 9px;
+  line-height: 1.6;
+  border-top: 0.5px solid var(--c-border);
+  padding-top: 12px;
 }
 </style>
