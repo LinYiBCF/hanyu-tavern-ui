@@ -1,9 +1,11 @@
 <template>
   <div class="wrap">
-    <!-- 一位：唯一值得放大的数字 -->
+    <!-- 一位：整个面板唯一放大的数字 -->
     <div class="hero">
-      <span class="hero__n">{{ store.data.成绩.一位 }}</span>
-      <span class="hero__u">座一位</span>
+      <div class="hero__line">
+        <span class="hero__n">{{ store.data.成绩.一位 }}</span>
+        <span class="hero__u">座一位</span>
+      </div>
       <div class="bar hero__bar">
         <div class="bar__fill bar__fill--accent" :style="{ width: one_pct }"></div>
       </div>
@@ -38,50 +40,54 @@ const one_pct = computed(() => `${Math.min(100, store.data.成绩.一位 * 8)}%`
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
 }
 
 .hero {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hero__line {
+  display: flex;
   align-items: baseline;
-  flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .hero__n {
   font-family: var(--font-mono);
-  font-size: 40px;
-  font-weight: 300;
-  letter-spacing: -0.035em;
+  font-size: 52px;
+  font-weight: 400;
+  letter-spacing: -0.045em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  color: var(--c-text);
 }
 
 .hero__u {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .hero__bar {
-  flex: 1 1 100%;
-  margin-top: 8px;
-  height: 2px;
+  height: 3px;
 }
 
 .rows {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .row {
   display: grid;
-  grid-template-columns: 64px 1fr;
-  gap: 14px;
+  grid-template-columns: 72px 1fr;
+  gap: 16px;
   align-items: baseline;
-  padding: 9px 0;
-  border-bottom: 0.5px solid var(--c-border);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c-border);
 
   &:last-child {
     border-bottom: none;
@@ -89,14 +95,16 @@ const one_pct = computed(() => `${Math.min(100, store.data.成绩.一位 * 8)}%`
 }
 
 .row__k {
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .row__v {
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 550;
   color: var(--c-text);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 </style>

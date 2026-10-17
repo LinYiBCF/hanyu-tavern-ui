@@ -1,8 +1,24 @@
 <template>
-  <div class="sheet">
+  <div class="sheet" :class="`ap-font--${font_style}`">
     <header class="sheet__head">
-      <h1 class="sheet__title">入场</h1>
-      <p class="sheet__sub">{{ subs[page] }}</p>
+      <div class="sheet__top">
+        <div>
+          <h1 class="sheet__title">入场</h1>
+          <p class="sheet__sub">{{ subs[page] }}</p>
+        </div>
+        <div class="sheet__font" role="group" aria-label="字体">
+          <button
+            v-for="f in fonts"
+            :key="f.id"
+            type="button"
+            class="sheet__fontbtn"
+            :class="{ 'sheet__fontbtn--on': font_style === f.id }"
+            @click="font_style = f.id"
+          >
+            {{ f.label }}
+          </button>
+        </div>
+      </div>
       <div class="steps">
         <span v-for="i in 3" :key="i" class="steps__dot" :class="{ 'steps__dot--on': i - 1 <= page }"></span>
         <span class="steps__num">{{ page + 1 }} / 3</span>
@@ -230,6 +246,15 @@ import { useDataStore } from '../store';
 const store = useDataStore();
 
 const subs = ['第一页：你是谁', '第二页：你在哪', '第三页：你的账'];
+
+const fonts = [
+  { id: 'system', label: '系统' },
+  { id: 'serif', label: '宋' },
+  { id: 'kai', label: '楷' },
+  { id: 'mono', label: '等宽' },
+];
+
+const font_style = useLocalStorage<string>('韩娱状态栏:font', 'system');
 
 const page = ref(0);
 const error = ref('');
@@ -464,53 +489,96 @@ async function submit() {
 <style lang="scss" scoped>
 .sheet {
   width: 100%;
-  max-width: 560px;
+  max-width: 640px;
   margin: 0 auto;
-  background: var(--c-surface);
+  background: linear-gradient(165deg, rgba(255, 253, 248, 0.94) 0%, rgba(250, 245, 235, 0.9) 100%);
   backdrop-filter: var(--glass);
   -webkit-backdrop-filter: var(--glass);
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 22px;
   box-shadow:
     var(--lift-hi),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
   color: var(--c-text);
+  font-family: var(--font-ui);
   font-size: 13px;
+  font-weight: 500;
   overflow: hidden;
 }
 
 /* ── 顶部 ── */
 .sheet__head {
-  padding: 22px 22px 16px;
+  padding: 24px 26px 18px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.sheet__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .sheet__title {
-  font-size: 1.55rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
   color: var(--c-text);
 }
 
 .sheet__sub {
-  margin-top: 5px;
-  font-size: 0.78rem;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
   color: var(--c-text-muted);
   letter-spacing: 0.005em;
+}
+
+.sheet__font {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.sheet__fontbtn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 7px;
+  background: rgba(120, 104, 78, 0.07);
+  color: var(--c-text-faint);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 550;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    color: var(--c-text);
+  }
+}
+
+.sheet__fontbtn--on {
+  background: var(--c-text);
+  color: #fffdf9;
 }
 
 .steps {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .steps__dot {
-  width: 26px;
-  height: 2px;
-  border-radius: 1px;
-  background: rgba(0, 0, 0, 0.09);
+  width: 30px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: rgba(96, 84, 62, 0.16);
   transition: background 0.4s var(--ease);
 }
 
@@ -521,7 +589,8 @@ async function submit() {
 .steps__num {
   margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: var(--c-text-faint);
   letter-spacing: 0.02em;
 }
@@ -530,20 +599,20 @@ async function submit() {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 0 22px 20px;
+  gap: 16px;
+  padding: 20px 26px 22px;
 }
 
 .page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .row2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
 .split3 {
@@ -556,26 +625,27 @@ async function submit() {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
 }
 
 .field__label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   color: var(--c-text-faint);
 }
 
 .field__input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 11px 13px;
   background: var(--c-surface-sunken);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--c-text);
   font-family: var(--font-ui);
-  font-size: 0.84rem;
+  font-size: 0.86rem;
+  font-weight: 500;
   line-height: 1.5;
   outline: none;
   transition:
@@ -589,7 +659,7 @@ async function submit() {
   }
 
   &:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(120, 104, 78, 0.075);
   }
 
   &:focus {
@@ -601,20 +671,21 @@ async function submit() {
 
 .field__input--area {
   resize: vertical;
-  min-height: 60px;
+  min-height: 64px;
   font-family: var(--font-ui);
+  line-height: 1.7;
 }
 
 /* ── 带单位的小格 ── */
 .cell {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   min-width: 0;
 }
 
 .cell--narrow {
-  max-width: 128px;
+  max-width: 138px;
 }
 
 .cell__in {
@@ -624,6 +695,7 @@ async function submit() {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
+  font-weight: 600;
 }
 
 .cell__in--mono {
@@ -632,23 +704,25 @@ async function submit() {
 
 .cell__unit {
   flex-shrink: 0;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
+  font-weight: 550;
   color: var(--c-text-faint);
 }
 
 .cell__unit--mono {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.84rem;
+  font-weight: 600;
   color: var(--c-text-muted);
 }
 
 /* ── 分组 ── */
 .group {
-  padding-top: 16px;
-  border-top: 0.5px solid var(--c-border);
+  padding-top: 18px;
+  border-top: 1px solid var(--c-border);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .group--top {
@@ -657,63 +731,68 @@ async function submit() {
 }
 
 .group__h {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: var(--c-text);
 }
 
 .group__desc {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
+  font-weight: 500;
   color: var(--c-text-faint);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .group__note {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
+  font-weight: 500;
   color: var(--c-text-faint);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .group__warn {
   color: var(--c-warning);
+  font-weight: 600;
 }
 
 /* ── 财务三卡 ── */
 .money {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 14px;
+  gap: 9px;
+  padding: 15px 16px;
   border-radius: var(--radius);
-  background: var(--c-surface-sunken);
+  background: rgba(120, 104, 78, 0.045);
+  border: 1px solid var(--c-border);
 }
 
 .money__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .money__k {
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: var(--c-text-muted);
-  letter-spacing: 0.04em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c-text);
+  letter-spacing: 0.05em;
   flex-shrink: 0;
 }
 
 .money__ctrl {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   min-width: 0;
 }
 
 .money__unit {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.86rem;
+  font-weight: 600;
   color: var(--c-text-faint);
   flex-shrink: 0;
 }
@@ -735,18 +814,20 @@ async function submit() {
 }
 
 .money__num {
-  width: 116px;
+  width: 128px;
   text-align: right;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  padding: 7px 10px;
-  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 8px 11px;
+  font-size: 0.86rem;
 }
 
 .money__cycle {
-  width: 78px;
-  padding: 7px 6px;
-  font-size: 0.76rem;
+  width: 84px;
+  padding: 8px 6px;
+  font-size: 0.78rem;
+  font-weight: 550;
   font-family: var(--font-ui);
   color: var(--c-text-muted);
   appearance: none;
@@ -756,20 +837,22 @@ async function submit() {
 
 .money__cny {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--c-text-faint);
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
 .money__note {
-  font-size: 0.78rem;
-  padding: 8px 10px;
+  font-size: 0.8rem;
+  padding: 9px 11px;
 }
 
 /* ── 错误与导航 ── */
 .err {
-  font-size: 0.74rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--c-danger);
   padding-top: 2px;
 }
@@ -777,16 +860,16 @@ async function submit() {
 .nav {
   display: flex;
   gap: 10px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .nav__btn {
   flex: 1;
-  padding: 12px;
+  padding: 13px;
   border-radius: 12px;
   font-family: var(--font-ui);
-  font-size: 0.84rem;
-  font-weight: 500;
+  font-size: 0.86rem;
+  font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
   transition:
@@ -799,7 +882,7 @@ async function submit() {
 .nav__btn--main {
   border: 1px solid transparent;
   background: var(--c-text);
-  color: #fff;
+  color: #fffdf9;
 
   &:hover:not(:disabled) {
     background: #000;
@@ -816,13 +899,13 @@ async function submit() {
 }
 
 .nav__btn--ghost {
-  flex: 0 0 104px;
+  flex: 0 0 112px;
   border: 1px solid var(--c-border-strong);
   background: transparent;
   color: var(--c-text-muted);
 
   &:hover:not(:disabled) {
-    background: rgba(0, 0, 0, 0.03);
+    background: rgba(120, 104, 78, 0.05);
     color: var(--c-text);
   }
 
@@ -838,11 +921,11 @@ async function submit() {
   }
 
   .sheet__head {
-    padding: 18px 18px 14px;
+    padding: 20px 18px 15px;
   }
 
   .form {
-    padding: 0 18px 18px;
+    padding: 18px 18px 20px;
   }
 
   .money__head {

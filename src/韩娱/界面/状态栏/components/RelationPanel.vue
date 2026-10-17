@@ -106,33 +106,33 @@ const relations = computed(() =>
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
 }
 
 .block__h {
   font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   color: var(--c-text-faint);
-  margin-bottom: 9px;
+  margin-bottom: 11px;
 }
 
 .empty {
-  font-size: 11.5px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--c-text-faint);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-/* ── 恋爱线：每一条是一段不带框的条目，靠间距分隔 ── */
+/* ── 恋爱线 ── */
 .lines {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .line {
-  padding: 12px 0;
-  border-bottom: 0.5px solid var(--c-border);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--c-border);
 
   &:first-child {
     padding-top: 0;
@@ -148,22 +148,23 @@ const relations = computed(() =>
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 11px;
 }
 
 .line__name {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--c-text);
 }
 
 .line__stage {
-  font-size: 9.5px;
-  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 650;
+  padding: 2.5px 9px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--c-sunken);
   white-space: nowrap;
 }
 
@@ -172,38 +173,40 @@ const relations = computed(() =>
 }
 
 .line__stage--warm {
-  color: #c96a00;
+  color: var(--c-warning);
 }
 
 .line__stage--hot {
   color: var(--c-primary);
-  background: rgba(0, 113, 227, 0.08);
+  background: var(--c-primary-dim);
 }
 
 .mini {
   display: grid;
-  grid-template-columns: 26px 1fr 26px;
-  gap: 10px;
+  grid-template-columns: 30px 1fr 28px;
+  gap: 11px;
   align-items: center;
 
   & + & {
-    margin-top: 6px;
+    margin-top: 7px;
   }
 }
 
 .mini__k {
-  font-size: 10px;
+  font-size: 10.5px;
+  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
 .mini__bar {
-  height: 2px;
+  height: 3px;
 }
 
 .mini__v {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--c-text-muted);
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -214,13 +217,14 @@ const relations = computed(() =>
 }
 
 .warn {
-  margin-top: 8px;
-  font-size: 10.5px;
+  margin-top: 9px;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--c-danger);
   letter-spacing: 0.01em;
 }
 
-/* ── 关系网：一行一个人，立场用最淡的胶囊 ── */
+/* ── 关系网 ── */
 .rel {
   display: flex;
   flex-direction: column;
@@ -228,11 +232,11 @@ const relations = computed(() =>
 
 .rel__row {
   display: grid;
-  grid-template-columns: 1fr auto 54px 22px;
-  gap: 9px;
+  grid-template-columns: 1fr auto 60px 24px;
+  gap: 10px;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 0.5px solid var(--c-border);
+  padding: 9px 0;
+  border-bottom: 1px solid var(--c-border);
 
   &:last-child {
     border-bottom: none;
@@ -240,7 +244,8 @@ const relations = computed(() =>
 }
 
 .rel__name {
-  font-size: 12px;
+  font-size: 12.5px;
+  font-weight: 550;
   color: var(--c-text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -248,15 +253,16 @@ const relations = computed(() =>
 }
 
 .tag {
-  font-size: 9.5px;
-  padding: 1px 7px;
+  font-size: 10px;
+  font-weight: 650;
+  padding: 1.5px 8px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--c-sunken);
   white-space: nowrap;
 }
 
 .tag--ok {
-  color: #248a3d;
+  color: var(--c-success);
 }
 
 .tag--mid {
@@ -268,12 +274,13 @@ const relations = computed(() =>
 }
 
 .rel__bar {
-  height: 2px;
+  height: 3px;
 }
 
 .rel__v {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 10.5px;
+  font-weight: 600;
   color: var(--c-text-faint);
   text-align: right;
   font-variant-numeric: tabular-nums;

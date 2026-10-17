@@ -14,6 +14,7 @@
         <span class="weight__v">
           <span v-if="store.data.主角.体重 > 0" class="weight__num">{{ weight_text }}</span>
           <span v-else class="weight__num weight__num--empty">—</span>
+          <span v-if="store.data.主角.体重 > 0" class="weight__unit">kg</span>
           <span
             v-if="store.data.主角.体重 > 0 && store.data.主角.体重趋势 === '升'"
             class="tri tri--up"
@@ -95,7 +96,7 @@ const state_hint = computed(() => {
 const weight_text = computed(() => {
   const w = store.data.主角.体重;
   if (!w) return '';
-  return `${w.toFixed(1)} kg`;
+  return `${w.toFixed(1)}`;
 });
 
 const fatigue_class = computed(() => {
@@ -143,99 +144,111 @@ const loop_warning = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
-/* ── 状态：极小的一行，不做成卡片 ── */
+/* ── 状态 ── */
 .state {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-bottom: 12px;
-  border-bottom: 0.5px solid var(--c-border);
+  gap: 9px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--c-border);
 }
 
 .state__dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .state__dot--ok {
-  background: #34c759;
-  box-shadow: 0 0 6px rgba(52, 199, 89, 0.5);
+  background: #2fbf4e;
+  box-shadow: 0 0 7px rgba(47, 191, 78, 0.6);
 }
 
 .state__dot--mid {
-  background: #aeaeb2;
+  background: #b8b1a4;
 }
 
 .state__dot--warn {
   background: #ff9500;
-  box-shadow: 0 0 6px rgba(255, 149, 0, 0.5);
+  box-shadow: 0 0 7px rgba(255, 149, 0, 0.6);
 }
 
 .state__dot--bad {
   background: #ff3b30;
-  box-shadow: 0 0 6px rgba(255, 59, 48, 0.5);
+  box-shadow: 0 0 7px rgba(255, 59, 48, 0.6);
 }
 
 .state__label {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--c-text);
 }
 
 .state__sub {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--c-text-muted);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 /* ── 体重 ── */
 .weight {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .weight__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .weight__k {
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .weight__v {
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 5px;
 }
 
 .weight__num {
   font-family: var(--font-mono);
-  font-size: 30px;
-  font-weight: 300;
-  letter-spacing: -0.03em;
+  font-size: 40px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  color: var(--c-text);
 }
 
 .weight__num--empty {
   color: var(--c-text-faint);
 }
 
+.weight__unit {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--c-text-faint);
+  letter-spacing: 0.02em;
+}
+
 .tri {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1;
-  transform: translateY(-4px);
+  transform: translateY(-6px);
 }
 
 .tri--up {
@@ -243,12 +256,13 @@ const loop_warning = computed(() => {
 }
 
 .tri--down {
-  color: #248a3d;
+  color: var(--c-success);
 }
 
 .weight__why {
-  font-size: 11.5px;
-  line-height: 1.6;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.65;
   color: var(--c-text-muted);
 }
 
@@ -260,22 +274,23 @@ const loop_warning = computed(() => {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 6px;
-  padding-top: 7px;
-  border-top: 0.5px solid var(--c-border);
-  font-size: 10.5px;
-  line-height: 1.5;
+  gap: 5px;
+  margin-top: 7px;
+  padding-top: 9px;
+  border-top: 1px solid var(--c-border);
+  font-size: 11px;
+  line-height: 1.55;
 }
 
 .weight__daily-k {
   color: var(--c-text-faint);
-  letter-spacing: 0.04em;
+  font-weight: 550;
+  letter-spacing: 0.05em;
 }
 
 .weight__daily-v {
   font-family: var(--font-mono);
-  font-weight: 600;
+  font-weight: 650;
   font-variant-numeric: tabular-nums;
 }
 
@@ -284,7 +299,7 @@ const loop_warning = computed(() => {
 }
 
 .weight__daily-v--warm {
-  color: #c96a00;
+  color: var(--c-warning);
 }
 
 .weight__daily-v--hot {
@@ -296,16 +311,17 @@ const loop_warning = computed(() => {
 }
 
 .weight__loop {
-  color: #c96a00;
+  color: var(--c-warning);
+  font-weight: 600;
 }
 
 /* ── 疲劳 ── */
 .fatigue {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: 16px;
-  border-top: 0.5px solid var(--c-border);
+  gap: 7px;
+  padding-top: 18px;
+  border-top: 1px solid var(--c-border);
 }
 
 .fatigue__head {
@@ -315,18 +331,20 @@ const loop_warning = computed(() => {
 }
 
 .fatigue__k {
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .fatigue__v {
   font-family: var(--font-mono);
-  font-size: 22px;
-  font-weight: 300;
-  letter-spacing: -0.02em;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  color: var(--c-text);
 }
 
 .fatigue__v--hot {
@@ -334,25 +352,27 @@ const loop_warning = computed(() => {
 }
 
 .fatigue__hint {
-  margin-top: 2px;
-  font-size: 11px;
+  margin-top: 3px;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--c-text-faint);
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* ── 伤病 ── */
 .block__h {
   font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   color: var(--c-text-faint);
-  margin-bottom: 9px;
+  margin-bottom: 10px;
 }
 
 .prose {
-  font-size: 12px;
-  line-height: 1.75;
+  font-size: 12.5px;
+  line-height: 1.8;
   color: var(--c-text-muted);
   white-space: pre-wrap;
+  font-weight: 500;
 }
 </style>

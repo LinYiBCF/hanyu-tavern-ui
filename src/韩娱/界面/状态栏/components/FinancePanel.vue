@@ -4,9 +4,7 @@
     <div class="net">
       <div class="net__head">
         <span class="net__k">积蓄</span>
-        <span class="net__nums">
-          <span class="net__v" :class="`net__v--${net_tone}`">{{ krw(store.data.主角.财务.积蓄.数值) }}</span>
-        </span>
+        <span class="net__v" :class="`net__v--${net_tone}`">{{ krw(store.data.主角.财务.积蓄.数值) }}</span>
       </div>
       <p class="net__cny">≈ {{ cny_of(store.data.主角.财务.积蓄.数值) }}</p>
       <p class="net__hint">{{ net_hint }}</p>
@@ -94,42 +92,37 @@ const guard_hint = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
-/* ── 积蓄：放大数字 + 灰字旁注 ── */
+/* ── 积蓄 ── */
 .net {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding-bottom: 16px;
-  border-bottom: 0.5px solid var(--c-border);
+  gap: 5px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--c-border);
 }
 
 .net__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .net__k {
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.04em;
-}
-
-.net__nums {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
+  letter-spacing: 0.05em;
 }
 
 .net__v {
   font-family: var(--font-mono);
-  font-size: 26px;
-  font-weight: 300;
-  letter-spacing: -0.035em;
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -139,7 +132,7 @@ const guard_hint = computed(() => {
 }
 
 .net__v--warn {
-  color: #c96a00;
+  color: var(--c-warning);
 }
 
 .net__v--bad {
@@ -148,28 +141,30 @@ const guard_hint = computed(() => {
 
 .net__cny {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--c-text-faint);
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
 .net__hint {
-  margin-top: 4px;
-  font-size: 11.5px;
+  margin-top: 5px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--c-text-muted);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-/* ── 收支：两行，用发丝线分 ── */
+/* ── 收支 ── */
 .flows {
   display: flex;
   flex-direction: column;
 }
 
 .flow {
-  padding: 11px 0;
-  border-bottom: 0.5px solid var(--c-border);
+  padding: 13px 0;
+  border-bottom: 1px solid var(--c-border);
 
   &:first-child {
     padding-top: 0;
@@ -184,50 +179,56 @@ const guard_hint = computed(() => {
 .flow__row {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 9px;
 }
 
 .flow__k {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 550;
   color: var(--c-text-muted);
   flex-shrink: 0;
 }
 
 .flow__v {
   font-family: var(--font-mono);
-  font-size: 15px;
-  letter-spacing: -0.01em;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
   margin-left: auto;
   font-variant-numeric: tabular-nums;
+  color: var(--c-text);
 }
 
 .flow__cycle {
-  font-size: 10px;
+  font-size: 10.5px;
+  font-weight: 550;
   color: var(--c-text-faint);
   flex-shrink: 0;
-  width: 20px;
+  width: 22px;
   text-align: left;
 }
 
 .flow__sub {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin-top: 4px;
+  gap: 11px;
+  margin-top: 5px;
 }
 
 .flow__cny {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 10.5px;
+  font-weight: 500;
   color: var(--c-text-faint);
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
 }
 
 .flow__note {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--c-text-faint);
-  line-height: 1.5;
+  line-height: 1.55;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -235,24 +236,26 @@ const guard_hint = computed(() => {
 
 .block__h {
   font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   color: var(--c-text-faint);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .prose {
-  font-size: 12px;
-  line-height: 1.75;
+  font-size: 12.5px;
+  line-height: 1.8;
   color: var(--c-text-muted);
   white-space: pre-wrap;
+  font-weight: 500;
 }
 
 .guard {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--c-text-faint);
-  line-height: 1.6;
-  border-top: 0.5px solid var(--c-border);
-  padding-top: 12px;
+  line-height: 1.65;
+  border-top: 1px solid var(--c-border);
+  padding-top: 14px;
 }
 </style>

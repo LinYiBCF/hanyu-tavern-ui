@@ -5,45 +5,49 @@
 }
 
 :root {
-  /* 底色：白，但不是死白。留一点透，让酒馆壁纸从底下透上来 */
-  --c-surface: rgba(255, 255, 255, 0.84);
-  --c-surface-raised: rgba(255, 255, 255, 0.96);
-  --c-surface-sunken: rgba(0, 0, 0, 0.028);
+  /* ── 底：米白，不是灰白。暖一点，才像纸不像屏幕 ── */
+  --c-base: #f7f3ea;
+  --c-base-deep: #efe9dc;
 
-  /* 文字：石墨黑，不用纯黑 */
-  --c-text: #1d1d1f;
-  --c-text-muted: #86868b;
-  --c-text-faint: #aeaeb2;
+  /* 面板：比底更白，靠透明度让米白从缝里透上来 */
+  --c-panel: rgba(255, 253, 249, 0.78);
+  --c-panel-solid: #fffdf9;
+  --c-rail: rgba(255, 255, 255, 0.3);
+  --c-sunken: rgba(120, 104, 78, 0.055);
 
-  /* 线：全部做成半透明的发丝线 */
-  --c-border: rgba(0, 0, 0, 0.055);
-  --c-border-strong: rgba(0, 0, 0, 0.1);
+  /* 字：浓，不用淡灰。性冷淡不等于看不清 */
+  --c-text: #16161a;
+  --c-text-muted: #56565e;
+  --c-text-faint: #8f8b83;
 
-  /* 强调：苹果蓝，只在一个地方出现 */
+  /* 线：暖发丝线，比纯黑透明更柔和 */
+  --c-border: rgba(96, 84, 62, 0.11);
+  --c-border-strong: rgba(96, 84, 62, 0.2);
+
+  /* 强调：只用一种，石墨黑做主，苹果蓝只标记当前 */
+  --c-accent: #16161a;
+  --c-accent-dim: rgba(22, 22, 26, 0.08);
   --c-primary: #0071e3;
-  --c-primary-dim: rgba(0, 113, 227, 0.12);
+  --c-primary-dim: rgba(0, 113, 227, 0.1);
 
-  /* 次强调：石墨黑。性冷淡的规则是宁可没有第二个彩色 */
-  --c-accent: #1d1d1f;
-  --c-accent-dim: rgba(0, 0, 0, 0.14);
+  /* 语义 */
+  --c-danger: #e0342b;
+  --c-warning: #c9780a;
+  --c-success: #21833f;
+  --c-info: #2f7fb8;
 
-  /* 语义：iOS 系统色 */
-  --c-danger: #ff3b30;
-  --c-warning: #ff9500;
-  --c-success: #34c759;
-  --c-info: #5ac8fa;
-
-  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue',
-    'Microsoft YaHei', sans-serif;
+  /* 字族：--font-ui 由 .ap-scope 上的字体选择器覆盖 */
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Cascadia Mono', Consolas, monospace;
 
-  --radius: 14px;
-  --radius-sm: 9px;
+  --radius: 16px;
+  --radius-sm: 10px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --glass: blur(20px) saturate(180%);
-  --lift: 0 4px 18px rgba(0, 0, 0, 0.05);
-  --lift-hi: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --glass: blur(24px) saturate(180%);
+  --lift: 0 8px 28px rgba(74, 60, 38, 0.1);
+  --lift-hi: 0 14px 44px rgba(74, 60, 38, 0.16);
 }
 
 body {
@@ -52,13 +56,33 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--c-text);
+  font-weight: 500;
 }
 
-/* 数值条通用：细，弱，不抢戏 */
+/* ── 字体自选：四个预设，覆盖 --font-ui，子层全部继承 ── */
+.ap-font--system {
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+.ap-font--serif {
+  --font-ui: 'Songti SC', 'Source Han Serif SC', 'Noto Serif SC', 'PingFang SC', 'SimSun', serif;
+}
+
+.ap-font--kai {
+  --font-ui: 'Kaiti SC', 'STKaiti', 'KaiTi', 'PingFang SC', 'Microsoft YaHei', serif;
+}
+
+.ap-font--mono {
+  --font-ui: 'SF Mono', ui-monospace, 'Menlo', 'Consolas', 'PingFang SC', 'Microsoft YaHei',
+    monospace;
+}
+
+/* 数值条通用：细，弱，但底色压得住 */
 .bar {
   position: relative;
   height: 4px;
-  background: rgba(0, 0, 0, 0.055);
+  background: rgba(96, 84, 62, 0.12);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -90,5 +114,5 @@ body {
 }
 
 .bar__fill--muted {
-  background: #c7c7cc;
+  background: #b8b1a4;
 }

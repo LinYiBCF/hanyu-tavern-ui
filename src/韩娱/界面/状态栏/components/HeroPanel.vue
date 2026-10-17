@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <!-- 身份：两列发丝线表格，不加框 -->
+    <!-- 身份：两列，无框，靠发丝线分 -->
     <div class="grid2">
       <div class="field">
         <span class="field__k">国籍</span>
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <!-- 位置：资源层级做主角，两条细线跟在后面 -->
+    <!-- 位置 -->
     <section class="block">
       <h4 class="block__h">位置</h4>
 
@@ -112,34 +112,36 @@ const tier_note = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
-/* ── 身份：无框发丝线表格 ── */
+/* ── 身份：无框表格 ── */
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 18px;
+  gap: 0 26px;
 }
 
 .field {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
-  padding: 7px 0;
-  border-bottom: 0.5px solid var(--c-border);
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--c-border);
 }
 
 .field__k {
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 550;
   color: var(--c-text-faint);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   flex-shrink: 0;
 }
 
 .field__v {
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--c-text);
   text-align: right;
   overflow: hidden;
@@ -150,48 +152,50 @@ const tier_note = computed(() => {
 .field__v--num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
-/* ── 区块标题：极小的字，全部大写感，靠字距撑起来 ── */
+/* ── 区块标题 ── */
 .block__h {
   font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   color: var(--c-text-faint);
-  margin-bottom: 9px;
+  margin-bottom: 11px;
 }
 
-/* ── 资源层级：整形，一整行给它 ── */
+/* ── 资源层级 ── */
 .tier {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding-bottom: 13px;
-  margin-bottom: 13px;
-  border-bottom: 0.5px solid var(--c-border);
+  gap: 4px;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--c-border);
 }
 
 .tier__v {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--c-text);
 }
 
 .tier__sub {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--c-text-muted);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .meter {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 
   & + & {
-    margin-top: 12px;
+    margin-top: 14px;
   }
 }
 
@@ -202,22 +206,25 @@ const tier_note = computed(() => {
 }
 
 .meter__k {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 550;
   color: var(--c-text-muted);
 }
 
 .meter__v {
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--c-text);
   font-variant-numeric: tabular-nums;
 }
 
 .prose {
-  font-size: 12px;
-  line-height: 1.75;
+  font-size: 12.5px;
+  line-height: 1.8;
   color: var(--c-text-muted);
   white-space: pre-wrap;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
+  font-weight: 500;
 }
 </style>

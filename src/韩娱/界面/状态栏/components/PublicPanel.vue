@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <!-- 热度：一个数字 + 一条线 + 一个风评胶囊 -->
+    <!-- 热度 -->
     <div class="heat">
       <div class="heat__head">
         <span class="heat__n" :class="{ 'heat__n--hot': store.data.舆论.热度 >= 70 }">
@@ -94,27 +94,27 @@ const heat_bar_class = computed(() => {
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 .heat {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .heat__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .heat__n {
   font-family: var(--font-mono);
-  font-size: 32px;
-  font-weight: 300;
-  letter-spacing: -0.03em;
+  font-size: 42px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -124,21 +124,21 @@ const heat_bar_class = computed(() => {
 }
 
 .heat__bar {
-  margin-top: 4px;
-  height: 2px;
+  height: 3px;
 }
 
 .tag {
-  font-size: 10px;
-  padding: 2px 8px;
+  font-size: 10.5px;
+  font-weight: 650;
+  padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.04);
-  letter-spacing: 0.02em;
+  background: var(--c-sunken);
+  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
 .tag--ok {
-  color: #248a3d;
+  color: var(--c-success);
 }
 
 .tag--mid {
@@ -146,7 +146,7 @@ const heat_bar_class = computed(() => {
 }
 
 .tag--warn {
-  color: #c96a00;
+  color: var(--c-warning);
 }
 
 .tag--bad {
@@ -156,56 +156,58 @@ const heat_bar_class = computed(() => {
 .crisis {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin-top: 6px;
-  padding: 7px 10px;
+  gap: 9px;
+  margin-top: 4px;
+  padding: 9px 12px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 59, 48, 0.06);
+  background: rgba(224, 52, 43, 0.07);
 }
 
 .crisis__k {
   font-size: 9.5px;
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   color: var(--c-danger);
-  opacity: 0.75;
   flex-shrink: 0;
 }
 
 .crisis__v {
-  font-size: 11.5px;
+  font-size: 12px;
+  font-weight: 550;
   color: var(--c-danger);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .block__h {
   font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   color: var(--c-text-faint);
-  margin-bottom: 9px;
+  margin-bottom: 11px;
 }
 
 .issues {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
 }
 
 .issue {
-  font-size: 12px;
+  font-size: 12.5px;
+  font-weight: 500;
   color: var(--c-text);
-  padding-left: 12px;
+  padding-left: 13px;
   position: relative;
-  line-height: 1.6;
+  line-height: 1.65;
 
   &::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 0.68em;
-    width: 3px;
-    height: 3px;
+    top: 0.66em;
+    width: 3.5px;
+    height: 3.5px;
     border-radius: 50%;
     background: var(--c-text-faint);
   }
@@ -215,18 +217,20 @@ const heat_bar_class = computed(() => {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 7px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .fan-size {
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--c-text);
 }
 
 .fan-power {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--c-text);
   font-variant-numeric: tabular-nums;
 }
@@ -234,30 +238,32 @@ const heat_bar_class = computed(() => {
 .comp {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 11px 18px;
-  margin-top: 15px;
+  gap: 13px 22px;
+  margin-top: 17px;
 }
 
 .comp__meta {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
 .comp__k {
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 550;
   color: var(--c-text-faint);
 }
 
 .comp__v {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--c-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .comp__bar {
-  height: 2px;
+  height: 3px;
 }
 </style>

@@ -5,38 +5,41 @@
 }
 
 :root {
-  --c-surface: rgba(255, 255, 255, 0.84);
-  --c-surface-raised: rgba(255, 255, 255, 0.96);
-  --c-surface-sunken: rgba(0, 0, 0, 0.028);
+  /* ── 底：米白，与状态栏同一套 ── */
+  --c-base: #f7f3ea;
 
-  --c-text: #1d1d1f;
-  --c-text-muted: #86868b;
-  --c-text-faint: #aeaeb2;
+  --c-surface: rgba(255, 253, 249, 0.78);
+  --c-surface-raised: #fffdf9;
+  --c-surface-sunken: rgba(120, 104, 78, 0.055);
 
-  --c-border: rgba(0, 0, 0, 0.055);
-  --c-border-strong: rgba(0, 0, 0, 0.1);
+  --c-text: #16161a;
+  --c-text-muted: #56565e;
+  --c-text-faint: #8f8b83;
+
+  --c-border: rgba(96, 84, 62, 0.11);
+  --c-border-strong: rgba(96, 84, 62, 0.2);
 
   --c-primary: #0071e3;
-  --c-primary-dim: rgba(0, 113, 227, 0.12);
-  --c-accent: #1d1d1f;
-  --c-accent-dim: rgba(0, 0, 0, 0.14);
+  --c-primary-dim: rgba(0, 113, 227, 0.1);
+  --c-accent: #16161a;
+  --c-accent-dim: rgba(22, 22, 26, 0.08);
 
-  --c-danger: #ff3b30;
-  --c-warning: #ff9500;
-  --c-success: #34c759;
-  --c-info: #5ac8fa;
+  --c-danger: #e0342b;
+  --c-warning: #c9780a;
+  --c-success: #21833f;
+  --c-info: #2f7fb8;
 
-  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue',
-    'Microsoft YaHei', sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Cascadia Mono', Consolas, monospace;
 
-  --radius: 14px;
-  --radius-sm: 9px;
+  --radius: 16px;
+  --radius-sm: 10px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --glass: blur(20px) saturate(180%);
-  --lift: 0 4px 18px rgba(0, 0, 0, 0.05);
-  --lift-hi: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --glass: blur(24px) saturate(180%);
+  --lift: 0 8px 28px rgba(74, 60, 38, 0.1);
+  --lift-hi: 0 14px 44px rgba(74, 60, 38, 0.16);
 }
 
 body {
@@ -45,4 +48,24 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--c-text);
+  font-weight: 500;
+}
+
+/* ── 字体自选：与状态栏同一套 ── */
+.ap-font--system {
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+.ap-font--serif {
+  --font-ui: 'Songti SC', 'Source Han Serif SC', 'Noto Serif SC', 'PingFang SC', 'SimSun', serif;
+}
+
+.ap-font--kai {
+  --font-ui: 'Kaiti SC', 'STKaiti', 'KaiTi', 'PingFang SC', 'Microsoft YaHei', serif;
+}
+
+.ap-font--mono {
+  --font-ui: 'SF Mono', ui-monospace, 'Menlo', 'Consolas', 'PingFang SC', 'Microsoft YaHei',
+    monospace;
 }
