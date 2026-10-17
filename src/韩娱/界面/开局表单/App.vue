@@ -242,6 +242,7 @@
 <script setup lang="ts">
 import { cny_of, krw } from '../currency';
 import { useDataStore } from '../store';
+import { useSafeStorage } from '../useSafeStorage';
 
 const store = useDataStore();
 
@@ -254,7 +255,7 @@ const fonts = [
   { id: 'mono', label: '等宽' },
 ];
 
-const font_style = useLocalStorage<string>('韩娱状态栏:font', 'system');
+const font_style = useSafeStorage<string>('韩娱状态栏:font', 'system');
 
 const page = ref(0);
 const error = ref('');

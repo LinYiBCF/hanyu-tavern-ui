@@ -58,6 +58,15 @@ export const Schema = z.object({
           人气: z.coerce.number().transform((v) => _.clamp(Math.round(v), 0, 100)).prefault(0),
           实力: z.coerce.number().transform((v) => _.clamp(Math.round(v), 0, 100)).prefault(0),
           资源层级: z.enum(['素人', '练习生', '新人', '上升期', '一线', '顶流']).catch('素人'),
+          /** 四路资源各自的具体内容，例：「迪奥 · 品牌挚友」 */
+          资源详情: z
+            .object({
+              奢牌代言: z.string().prefault(''),
+              影视资源: z.string().prefault(''),
+              综艺常驻: z.string().prefault(''),
+              时尚封面: z.string().prefault(''),
+            })
+            .prefault({}),
         })
         .prefault({}),
       财务: z
@@ -134,6 +143,16 @@ export const Schema = z.object({
       一位: z.coerce.number().transform((v) => Math.max(0, Math.round(v))).prefault(0),
       直拍: z.string().prefault(''),
       品牌评价: z.string().prefault(''),
+      既往成就: z
+        .array(
+          z
+            .object({
+              日期: z.coerce.string().prefault(''),
+              内容: z.coerce.string().prefault(''),
+            })
+            .prefault({}),
+        )
+        .prefault([]),
     })
     .prefault({}),
 

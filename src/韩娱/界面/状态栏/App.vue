@@ -109,6 +109,7 @@
 </template>
 
 <script setup lang="ts">
+import { useSafeStorage } from '../useSafeStorage';
 import { useDataStore } from '../store';
 import BodyPanel from './components/BodyPanel.vue';
 import CareerPanel from './components/CareerPanel.vue';
@@ -165,9 +166,9 @@ const fonts = [
   { id: 'mono', label: '等宽', title: '等宽字体' },
 ];
 
-const active_tab = useLocalStorage<string>('韩娱状态栏:active_tab', '主角');
-const rail_open = useLocalStorage<boolean>('韩娱状态栏:rail_open', true);
-const font_style = useLocalStorage<string>('韩娱状态栏:font', 'system');
+const active_tab = useSafeStorage<string>('韩娱状态栏:active_tab', '主角');
+const rail_open = useSafeStorage<boolean>('韩娱状态栏:rail_open', true);
+const font_style = useSafeStorage<string>('韩娱状态栏:font', 'system');
 
 const active_meta = computed(() => tabs.find((t) => t.id === active_tab.value) ?? tabs[0]);
 

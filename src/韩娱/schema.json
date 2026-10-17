@@ -182,6 +182,28 @@
                 "一线",
                 "顶流"
               ]
+            },
+            "资源详情": {
+              "default": {},
+              "type": "object",
+              "properties": {
+                "奢牌代言": {
+                  "default": "",
+                  "type": "string"
+                },
+                "影视资源": {
+                  "default": "",
+                  "type": "string"
+                },
+                "综艺常驻": {
+                  "default": "",
+                  "type": "string"
+                },
+                "时尚封面": {
+                  "default": "",
+                  "type": "string"
+                }
+              }
             }
           },
           "required": [
@@ -406,6 +428,24 @@
         "品牌评价": {
           "default": "",
           "type": "string"
+        },
+        "既往成就": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "日期": {
+                "default": "",
+                "type": "string"
+              },
+              "内容": {
+                "default": "",
+                "type": "string"
+              }
+            }
+          }
         }
       }
     },

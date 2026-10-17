@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <!-- 身份四格 -->
+    <!-- 身份四格 + 当前位置 -->
     <div class="bento">
       <div class="cell">
         <span class="cell__k">国籍</span>
@@ -18,53 +18,57 @@
         <span class="cell__k">身高体重</span>
         <span class="cell__v cell__v--num">{{ height_weight }}</span>
       </div>
-    </div>
 
-    <!-- 人气与实力两条 -->
-    <div class="metrics">
-      <div class="metric">
-        <div class="metric__head">
-          <span class="metric__k">综合人气指数</span>
-          <span class="metric__badge">{{ pop_delta }}</span>
-        </div>
-        <div class="metric__body">
-          <strong class="metric__n">{{ pop_text }}</strong>
-          <span class="metric__u">/ 100</span>
-        </div>
-        <div class="track">
-          <div class="track__fill track__fill--green" :style="{ width: pct(store.data.主角.事业.人气) }"></div>
-        </div>
-        <div class="metric__foot">{{ pop_hint }}</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric__head">
-          <span class="metric__k">实测实力评级</span>
-          <span class="metric__badge metric__badge--blue">{{ skill_grade }}</span>
-        </div>
-        <div class="metric__body">
-          <strong class="metric__n">{{ store.data.主角.事业.实力 }}</strong>
-          <span class="metric__u">/ 100</span>
-        </div>
-        <div class="track">
-          <div class="track__fill track__fill--blue" :style="{ width: pct(store.data.主角.事业.实力) }"></div>
-        </div>
-        <div class="metric__foot">{{ skill_hint }}</div>
+      <!-- 当前位置：紧贴出生下方，独占一行 -->
+      <div class="cell cell--wide">
+        <span class="cell__k">当前位置</span>
+        <span class="cell__v">{{ store.data.主角.当前位置 || '—' }}</span>
       </div>
     </div>
 
-    <!-- 资源层级分布 -->
+    <!-- 人气与实力：双圆环并排 -->
+    <div class="rings">
+      <div class="ring-card">
+        <div class="ring-card__head">
+          <span class="ring-card__k">综合人气指数</span>
+          <span class="ring-card__badge">{{ pop_delta }}</span>
+        </div>
+        <GaugeRing :value="store.data.主角.事业.人气" :display="pop_text" :size="92" :stroke="9" color="#1a9c5b" />
+        <div class="ring-card__foot">{{ pop_hint }}</div>
+      </div>
+
+      <div class="ring-card">
+        <div class="ring-card__head">
+          <span class="ring-card__k">实测实力评级</span>
+          <span class="ring-card__badge ring-card__badge--blue">{{ skill_grade }}</span>
+        </div>
+        <GaugeRing :value="store.data.主角.事业.实力" :display="skill_display" :size="92" :stroke="9" color="#0071e3" />
+        <div class="ring-card__foot">{{ skill_hint }}</div>
+      </div>
+    </div>
+
+    <!-- 资源层级：左侧四环，右侧具体内容 -->
     <div class="card">
       <div class="card__tag">RESOURCE TIER</div>
       <div class="card__title">{{ store.data.主角.事业.资源层级 }}</div>
       <div class="card__sub">{{ tier_note }}</div>
-      <div class="bars">
-        <div v-for="b in resource_bars" :key="b.label" class="bars__row">
-          <span class="bars__k">{{ b.label }}</span>
-          <div class="bars__track">
-            <div class="bars__fill" :style="{ width: b.value + '%' }"></div>
+
+      <div class="res">
+        <div class="res__rings">
+          <div v-for="b in resource_bars" :key="b.label" class="res__ring">
+            <GaugeRing :value="b.value" :display="b.value" :size="58" :stroke="6.5" :color="b.color" />
+            <span class="res__ring-k">{{ b.label }}</span>
+            <span class="res__ring-v">{{ b.state }}</span>
           </div>
-          <span class="bars__v">{{ b.state }}</span>
+        </div>
+
+        <div class="res__list">
+          <div v-for="b in resource_bars" :key="b.label" class="res__row">
+            <span class="res__row-k">{{ b.label }}</span>
+            <span class="res__row-v" :class="{ 'res__row-v--empty': !b.detail }">
+              {{ b.detail || b.state }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -89,18 +93,10 @@
     </div>
 
     <!-- 文本速览 -->
-    <div v-if="has_bio" class="bio">
-      <div v-if="store.data.主角.体型外貌" class="bio__row">
+    <div v-if="store.data.主角.体型外貌" class="bio">
+      <div class="bio__row">
         <span class="bio__k">体型外貌</span>
         <p class="bio__v">{{ store.data.主角.体型外貌 }}</p>
-      </div>
-      <div v-if="store.data.主角.过往经历" class="bio__row">
-        <span class="bio__k">过往经历</span>
-        <p class="bio__v">{{ store.data.主角.过往经历 }}</p>
-      </div>
-      <div v-if="store.data.主角.当前位置" class="bio__row">
-        <span class="bio__k">当前位置</span>
-        <p class="bio__v">{{ store.data.主角.当前位置 }}</p>
       </div>
     </div>
   </div>
@@ -108,12 +104,9 @@
 
 <script setup lang="ts">
 import { useDataStore } from '../../store';
+import GaugeRing from './GaugeRing.vue';
 
 const store = useDataStore();
-
-function pct(v: number) {
-  return `${Math.max(0, Math.min(100, v))}%`;
-}
 
 const height_weight = computed(() => {
   const h = store.data.主角.身高;
@@ -126,14 +119,9 @@ const height_weight = computed(() => {
   return '—';
 });
 
-const has_bio = computed(
-  () =>
-    Boolean(store.data.主角.体型外貌) ||
-    Boolean(store.data.主角.过往经历) ||
-    Boolean(store.data.主角.当前位置),
-);
-
 const pop_text = computed(() => store.data.主角.事业.人气.toFixed(1));
+
+const skill_display = computed(() => String(store.data.主角.事业.实力));
 
 const pop_delta = computed(() => {
   const v = store.data.主角.事业.人气;
@@ -180,6 +168,7 @@ const resource_bars = computed(() => {
   const tier = store.data.主角.事业.资源层级;
   const heat = store.data.主角.事业.人气;
   const favor = store.data.舆论.风评;
+  const detail = store.data.主角.事业.资源详情;
   const tier_base: Record<string, number> = {
     素人: 4,
     练习生: 10,
@@ -204,10 +193,10 @@ const resource_bars = computed(() => {
   const cover = adjust(heat >= 80 ? 8 : -6);
 
   return [
-    { label: '奢牌代言', value: brand, state: state_of(brand) },
-    { label: '影视资源', value: acting, state: state_of(acting) },
-    { label: '综艺常驻', value: show, state: state_of(show) },
-    { label: '时尚封面', value: cover, state: state_of(cover) },
+    { label: '奢牌代言', value: brand, state: state_of(brand), color: '#a67c00', detail: detail.奢牌代言 },
+    { label: '影视资源', value: acting, state: state_of(acting), color: '#c2457e', detail: detail.影视资源 },
+    { label: '综艺常驻', value: show, state: state_of(show), color: '#1a9c5b', detail: detail.综艺常驻 },
+    { label: '时尚封面', value: cover, state: state_of(cover), color: '#2f6fb5', detail: detail.时尚封面 },
   ];
 });
 
@@ -240,7 +229,7 @@ const tier_note = computed(() => {
   padding-bottom: 4px;
 }
 
-/* ── 身份四格 ── */
+/* ── 身份四格 + 当前位置 ── */
 .bento {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -252,9 +241,25 @@ const tier_note = computed(() => {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 34px;
   padding: 8px 12px;
   border-radius: 12px;
   background: var(--c-sunken);
+}
+
+.cell--wide {
+  grid-column: 1 / -1;
+  align-items: flex-start;
+
+  .cell__k {
+    padding-top: 1px;
+  }
+
+  .cell__v {
+    white-space: normal;
+    line-height: 1.5;
+    text-align: right;
+  }
 }
 
 .cell__k {
@@ -262,6 +267,7 @@ const tier_note = computed(() => {
   font-weight: 400;
   color: var(--c-text-faint);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .cell__v {
@@ -279,98 +285,64 @@ const tier_note = computed(() => {
   font-variant-numeric: tabular-nums;
 }
 
-/* ── 人气 / 实力 ── */
-.metrics {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.metric {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 13px 15px;
-  border-radius: 14px;
-  background: var(--c-card);
-  border: 1px solid var(--c-divider);
-}
-
-.metric__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* ── 人气 / 实力：双圆环并排 ── */
+.rings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
-.metric__k {
+.ring-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 12px 12px;
+  border-radius: 14px;
+  background: var(--c-card);
+  border: 1px solid var(--c-divider);
+  min-width: 0;
+}
+
+.ring-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+
+.ring-card__k {
   font-size: 11.5px;
   font-weight: 500;
   color: var(--c-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.metric__badge {
-  font-size: 10px;
+.ring-card__badge {
+  font-size: 9.5px;
   font-weight: 600;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 999px;
   background: #eefaf2;
   color: var(--c-success);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.metric__badge--blue {
+.ring-card__badge--blue {
   background: var(--c-primary-dim);
   color: var(--c-primary);
 }
 
-.metric__body {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.metric__n {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  color: var(--c-text);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.1;
-}
-
-.metric__u {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--c-text-faint);
-}
-
-.metric__foot {
+.ring-card__foot {
   font-size: 11px;
   font-weight: 400;
   line-height: 1.5;
   color: var(--c-text-faint);
-}
-
-.track {
-  height: 6px;
-  border-radius: 3px;
-  background: #e5e7eb;
-  overflow: hidden;
-}
-
-.track__fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.5s var(--ease);
-}
-
-.track__fill--green {
-  background: var(--c-ok);
-}
-
-.track__fill--blue {
-  background: var(--c-primary);
+  text-align: center;
 }
 
 /* ── 卡片 ── */
@@ -411,47 +383,104 @@ const tier_note = computed(() => {
   color: var(--c-text-muted);
 }
 
-.bars {
+/* ── 资源：左四环 + 右清单 ── */
+.res {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.res__rings {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.res__ring {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  margin-top: 10px;
-}
-
-.bars__row {
-  display: grid;
-  grid-template-columns: 66px 1fr 40px;
   align-items: center;
-  gap: 9px;
+  gap: 3px;
+  width: 58px;
 }
 
-.bars__k {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--c-text-muted);
-  white-space: nowrap;
-}
-
-.bars__track {
-  height: 4px;
-  border-radius: 2px;
-  background: #e5e7eb;
-  overflow: hidden;
-}
-
-.bars__fill {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--c-text);
-  transition: width 0.5s var(--ease);
-}
-
-.bars__v {
+.res__ring-k {
   font-size: 10px;
   font-weight: 500;
-  color: var(--c-text-faint);
-  text-align: right;
+  color: var(--c-text-muted);
   white-space: nowrap;
+  text-align: center;
+}
+
+.res__ring-v {
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--c-text-faint);
+  white-space: nowrap;
+}
+
+.res__list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.res__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--c-divider);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.res__row-k {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--c-text-faint);
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: 52px;
+}
+
+.res__row-v {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--c-text);
+  line-height: 1.45;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.res__row-v--empty {
+  color: var(--c-text-faint);
+  font-weight: 400;
+}
+
+@media (max-width: 560px) {
+  .res {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .res__rings {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .res__row-k {
+    width: auto;
+  }
 }
 
 /* ── 属性 ── */
